@@ -1,4 +1,4 @@
-package mod.kr8gz.bpsmod.gui;
+package mod.kr8gz.farmingutils.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommand;
@@ -16,7 +16,7 @@ public class ModConfigCommand implements ICommand {
 
     @Override
     public String getCommandName() {
-        return "bpsconfig";
+        return "farmingutils";
     }
 
     @Override
@@ -26,7 +26,7 @@ public class ModConfigCommand implements ICommand {
 
     @Override
     public List<String> getCommandAliases() {
-        return Collections.singletonList("bps");
+        return Collections.singletonList("fu");
     }
 
     @Override
@@ -59,7 +59,7 @@ public class ModConfigCommand implements ICommand {
         @SubscribeEvent
         public void oneTickDelay(TickEvent.ClientTickEvent event) {
             if (tickFlag) {
-                Minecraft.getMinecraft().displayGuiScreen(new GuiModConfig(null));
+                Minecraft.getMinecraft().displayGuiScreen(new GuiModConfig());
                 tickFlag = false;
             }
         }
