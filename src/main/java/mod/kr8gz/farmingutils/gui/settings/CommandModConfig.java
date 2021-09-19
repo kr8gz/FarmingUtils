@@ -1,4 +1,4 @@
-package mod.kr8gz.farmingutils.gui;
+package mod.kr8gz.farmingutils.gui.settings;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommand;
@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 
-public class ModConfigCommand implements ICommand {
+public class CommandModConfig implements ICommand {
     private static boolean tickFlag;
 
     @Override

@@ -1,11 +1,9 @@
-package mod.kr8gz.farmingutils.gui.elements;
+package mod.kr8gz.farmingutils.gui.settings.elements;
 
 import mod.kr8gz.farmingutils.FarmingUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 import test.kr8gz.settings.types.BooleanSetting;
 
 import java.util.function.Supplier;
@@ -31,10 +29,10 @@ public class CheckBox extends ModInteractableGuiElement {
         enabled = enabledCondition.get();
         GlStateManager.enableAlpha();
         GlStateManager.enableBlend();
-        if (!enabled) GL11.glColor4f(0.6f, 0.6f, 0.6f, 0.6f);
+        if (!enabled) GlStateManager.color(0.6f, 0.6f, 0.6f, 0.6f);
         Minecraft.getMinecraft().getTextureManager().bindTexture(checkboxTexture);
-        Gui.drawModalRectWithCustomSizedTexture(xPosition, yPosition, state ? 32 : 0, 0, width, height, 64, 32);
-        if (!enabled) GL11.glColor4f(1f, 1f, 1f, 1f);
+        drawModalRectWithCustomSizedTexture(xPosition, yPosition, state ? 32 : 0, 0, width, height, 64, 32);
+        if (!enabled) GlStateManager.color(1f, 1f, 1f, 1f);
     }
 
     @Override

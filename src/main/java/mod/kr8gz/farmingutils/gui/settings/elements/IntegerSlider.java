@@ -1,4 +1,4 @@
-package mod.kr8gz.farmingutils.gui.elements;
+package mod.kr8gz.farmingutils.gui.settings.elements;
 
 import test.kr8gz.settings.types.IntegerSetting;
 

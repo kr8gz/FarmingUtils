@@ -1,4 +1,4 @@
-package mod.kr8gz.farmingutils.gui.elements;
+package mod.kr8gz.farmingutils.gui.settings.elements;
 
 import test.kr8gz.settings.types.NumberSetting;
 
@@ -13,11 +13,14 @@ public class SliderTextBox<S extends NumberSetting<T>, T> extends TextBox {
     }
 
     @Override
-    public void keyTyped(char character, int key) {
-        super.keyTyped(character, key);
-        if (!badInput) {
-            slider.value = slider.boundSetting.get();
-            slider.updateSliderPos(slider.value);
+    public boolean keyTyped(char character, int key) {
+        if (super.keyTyped(character, key)) {
+            if (!badInput) {
+                slider.value = slider.boundSetting.get();
+                slider.updateSliderPos(slider.value);
+            }
+            return true;
         }
+        return false;
     }
 }
