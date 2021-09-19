@@ -108,7 +108,7 @@ public class JacobsHelperOverlay extends OverlaySection {
                     map.put("Crops until alert", Helper.formatInt(cropsUntilAlert));
                 }
                 if (ConfigManager.showTimeUntilAlert.get()) {
-                    map.put("Time until alert", Helper.formatTime((int) (cropsUntilAlert / (double) currentMedalData.crops * getElapsedTime())));
+                    map.put("Time until alert", Helper.formatTime((int) ((double) cropsUntilAlert / (double) currentMedalData.crops * (double) getElapsedTime())));
                 }
 
                 list.add(new OverlayTable(map));

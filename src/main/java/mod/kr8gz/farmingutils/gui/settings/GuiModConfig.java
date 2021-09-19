@@ -12,7 +12,6 @@ import test.kr8gz.settings.Settings;
 import test.kr8gz.settings.types.BooleanSetting;
 import test.kr8gz.settings.types.DecimalSetting;
 import test.kr8gz.settings.types.IntegerSetting;
-import test.kr8gz.settings.types.KeybindSetting;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,7 +53,6 @@ public class GuiModConfig extends GuiScreen {
 
         addSection("Overlay");
         addCheckBox(ConfigManager.showOverlay);
-        addKeybindBox(ConfigManager.overlayToggleKey, () -> ConfigManager.showOverlay.get());
         addCheckBox(ConfigManager.showWarnings, () -> ConfigManager.showOverlay.get());
         addIntegerSlider(ConfigManager.roudingPrecision, () -> ConfigManager.showOverlay.get());
         addDecimalSlider(ConfigManager.overlayScale, () -> ConfigManager.showOverlay.get());
@@ -62,7 +60,6 @@ public class GuiModConfig extends GuiScreen {
 
         addSection("BPS");
         addCheckBox(ConfigManager.showBPS, () -> ConfigManager.showOverlay.get());
-        addKeybindBox(ConfigManager.bpsToggleKey, () -> ConfigManager.showOverlay.get() && ConfigManager.showBPS.get());
         // TODO someday ConfigManager.bpsTimes
 
         addSection("Jacob's Helper");
@@ -74,7 +71,6 @@ public class GuiModConfig extends GuiScreen {
 
         addSection("Angle Helper");
         addCheckBox(ConfigManager.showAngleHelper, () -> ConfigManager.showOverlay.get());
-        addKeybindBox(ConfigManager.angleHelperToggleKey, () -> ConfigManager.showOverlay.get() && ConfigManager.showAngleHelper.get());
         addDecimalSlider(ConfigManager.angleHelperOpacity, () -> ConfigManager.showOverlay.get() && ConfigManager.showAngleHelper.get());
         addCheckBox(ConfigManager.showYaw, () -> ConfigManager.showOverlay.get() && ConfigManager.showAngleHelper.get());
         addDecimalSlider(ConfigManager.angleHelperYaw, () -> ConfigManager.showOverlay.get() && ConfigManager.showAngleHelper.get() && ConfigManager.showYaw.get());
@@ -114,21 +110,6 @@ public class GuiModConfig extends GuiScreen {
         elementList.add(new CheckBox(
                 setting,
                 right - 32, height / 4 + prev + (offset - prev) / 2 - 26,
-                enabledCondition
-        ));
-    }
-
-    private void addKeybindBox(KeybindSetting setting) {
-        addKeybindBox(setting, () -> true);
-    }
-
-    private void addKeybindBox(KeybindSetting setting, Supplier<Boolean> enabledCondition) {
-        int prev = offset;
-        addOtherStuff(setting, 54);
-        elementList.add(new KeybindBox(
-                setting,
-                right - 54, height / 4 + prev + (offset - prev) / 2 - 20,
-                54, 20,
                 enabledCondition
         ));
     }

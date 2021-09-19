@@ -1,9 +1,11 @@
 package mod.kr8gz.farmingutils.config;
 
 import mod.kr8gz.farmingutils.FarmingUtils;
-import org.lwjgl.input.Keyboard;
 import test.kr8gz.settings.Settings;
-import test.kr8gz.settings.types.*;
+import test.kr8gz.settings.types.BooleanSetting;
+import test.kr8gz.settings.types.DecimalSetting;
+import test.kr8gz.settings.types.IntegerSetting;
+import test.kr8gz.settings.types.ListSetting;
 
 import java.math.BigDecimal;
 
@@ -14,11 +16,7 @@ public class ConfigManager {
     public static BooleanSetting showOverlay = new BooleanSetting(settings,
             "Show Overlay", "Shows overlay.", true
     );
-
-    public static KeybindSetting overlayToggleKey = new KeybindSetting(settings,
-            "Overlay Toggle Key", "Sets a keybind to temporarily hide overlay.", Keyboard.KEY_O
-    );
-
+    
     public static BooleanSetting showWarnings = new BooleanSetting(settings,
             "Show Warnings", "Shows warnings in overlay.", true
     );
@@ -41,10 +39,6 @@ public class ConfigManager {
     /** bps settings */
     public static BooleanSetting showBPS = new BooleanSetting(settings,
             "Show BPS", "Shows BPS overlay.", true
-    );
-
-    public static KeybindSetting bpsToggleKey = new KeybindSetting(settings,
-            "BPS Toggle Key", "Sets a keybind to temporarily hide BPS overlay.", Keyboard.KEY_B
     );
 
     public static ListSetting<Integer> bpsTimes = new ListSetting<Integer>(settings,
@@ -86,10 +80,6 @@ public class ConfigManager {
     /** angle helper settings */
     public static BooleanSetting showAngleHelper = new BooleanSetting(settings,
             "Show Angle Helper", "Shows Angle Helper overlay.", false
-    );
-
-    public static KeybindSetting angleHelperToggleKey = new KeybindSetting(settings,
-            "Angle Helper Toggle Key", "Sets a keybind to temporarily hide Angle Helper overlay.", Keyboard.KEY_H
     );
 
     public static DecimalSetting angleHelperOpacity = new DecimalSetting(settings,
