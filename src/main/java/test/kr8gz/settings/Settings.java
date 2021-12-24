@@ -1,28 +1,22 @@
 package test.kr8gz.settings;
 
+import mod.kr8gz.farmingutils.util.Helper;
+
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Settings {
     private final Path path;
-    private boolean isInit = false;
     public final ArrayList<AbstractSetting<?>> settingsList = new ArrayList<>();
 
     public Settings(String path) {
         this.path = Paths.get(path);
-        try {
-            Files.createFile(this.path);
-        } catch (FileAlreadyExistsException ignored) {
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Helper.createFile(this.path);
     }
 
     public static abstract class AbstractSetting<T> {
@@ -64,27 +58,22 @@ public class Settings {
 
     /** this should be called only once just after initializing all your settings */
     public void init() {
-        if (!this.isInit) {
-            this.isInit = true;
-            List<String> keyList = this.settingsList.stream().map(e -> e.key).collect(Collectors.toList());
-            try {
-                for (String line : Files.readAllLines(this.path)) {
-                    int sep = line.indexOf('=');
-                    String key = line.substring(0, sep);
-                    if (Collections.frequency(keyList, key) > 1) { // duplicate key
-                        throw new IllegalStateException("Duplicate setting keys");
-                    }
-                    for (AbstractSetting<?> s : this.settingsList) {
-                        if (s.key.equals(key)) {
-                            s.setFromString(line.substring(sep + 1));
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        HashMap<String, String> map = new HashMap<>();
+        try {
+            for (String line : Files.readAllLines(this.path)) {
+                int sep = line.indexOf('=');
+                map.put(line.substring(0, sep), line.substring(sep + 1));
             }
-        } else {
-            throw new IllegalStateException("init() called more than once");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for (AbstractSetting<?> s : settingsList) {
+            try {
+                if (map.containsKey(s.key) && s.setFromString(map.get(s.key))) {
+                    continue;
+                }
+            } catch (NumberFormatException ignored) {}
+            s.reset();
         }
     }
 }

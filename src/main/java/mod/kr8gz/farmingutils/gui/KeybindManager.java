@@ -10,7 +10,7 @@ import test.kr8gz.settings.Settings;
 import test.kr8gz.settings.types.BooleanSetting;
 
 public class KeybindManager {
-    private static final Settings toggleStates = new Settings("config/" + FarmingUtils.MODID + "-toggles.cfg");
+    private static final Settings toggleStates = new Settings(FarmingUtils.MODID + "/toggles.txt");
 
     // step 1
     private final KeyBinding toggleOverlay;

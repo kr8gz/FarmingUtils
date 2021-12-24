@@ -32,6 +32,7 @@ public class StringSetting extends Setting<String> {
     public boolean setFromString(String string) {
         if (canSet(string)) {
             value = string;
+            this.save();
             return true;
         } else {
             return false;

@@ -1,6 +1,6 @@
 package mod.kr8gz.farmingutils.gui.settings.elements;
 
-import mod.kr8gz.farmingutils.gui.settings.GuiModConfig;
+import mod.kr8gz.farmingutils.gui.settings.screens.ModGuiScreen;
 import mod.kr8gz.farmingutils.util.Colors;
 import mod.kr8gz.farmingutils.util.Helper;
 import net.minecraft.client.Minecraft;
@@ -9,8 +9,8 @@ import net.minecraft.client.gui.FontRenderer;
 public class MenuSectionLabel extends TextLabel {
     private final int sectionScrollAmount;
 
-    public MenuSectionLabel(String text, int x, int y, float scale, int maxWidth, int sectionScrollAmount) {
-        super(text, x, y, scale, maxWidth);
+    public MenuSectionLabel(ModGuiScreen screen, String text, int x, int y, float scale, int maxWidth, int sectionScrollAmount) {
+        super(screen, text, x, y, scale, maxWidth);
         this.sectionScrollAmount = -sectionScrollAmount;
     }
 
@@ -27,7 +27,7 @@ public class MenuSectionLabel extends TextLabel {
     @Override
     public void mousePressed() {
         color = Colors.LIGHTBLUE;
-        GuiModConfig.updateAmountScrolled(sectionScrollAmount);
+        screen.updateAmountScrolled(sectionScrollAmount);
     }
 
     @Override

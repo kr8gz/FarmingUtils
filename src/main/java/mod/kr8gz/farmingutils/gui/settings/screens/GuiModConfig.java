@@ -1,52 +1,37 @@
-package mod.kr8gz.farmingutils.gui.settings;
+package mod.kr8gz.farmingutils.gui.settings.screens;
 
 import mod.kr8gz.farmingutils.FarmingUtils;
 import mod.kr8gz.farmingutils.config.ConfigManager;
 import mod.kr8gz.farmingutils.gui.settings.elements.*;
 import mod.kr8gz.farmingutils.util.Colors;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.MathHelper;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import net.minecraft.client.Minecraft;
 import test.kr8gz.settings.Settings;
 import test.kr8gz.settings.types.BooleanSetting;
 import test.kr8gz.settings.types.DecimalSetting;
 import test.kr8gz.settings.types.IntegerSetting;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Supplier;
 
-public class GuiModConfig extends GuiScreen {
+public class GuiModConfig extends ModGuiScreen {
     static int left;
     static int right;
     static int maxDescWidth;
-
-    static int amountScrolled = 0;
     static int offset = 0;
-    static int maxScrollHeight;
-
-    public static final List<ModGuiElement> elementList = new ArrayList<>();
-    static ModGuiElement selectedElement;
-
     static int sections;
+
+    public GuiModConfig(ModGuiScreen parentScreen) {
+        super(parentScreen);
+    }
 
     @Override
     public void initGui() {
+        super.initGui();
+
         left = width / 4;
         right = width * 7/8;
         maxDescWidth = right - left - 16;
-
-        amountScrolled = 0;
         offset = 0;
-
-        elementList.clear();
-        selectedElement = null;
-
         sections = 0;
-
-        Keyboard.enableRepeatEvents(true);
 
         addTitleLabel(FarmingUtils.NAME + " Settings", height / 8 + offset);
         if (height / 8 < 20) offset = 20;
@@ -83,41 +68,35 @@ public class GuiModConfig extends GuiScreen {
         addSection("Miscellaneous");
         addCheckBox(ConfigManager.logInfo);
 
-        // special buttons in misc section
         int w = (right - left) / 2 - 4;
         int xOffs = (right - left) / 2 + 4;
 
-        // TODO add all functions + DIALOGUE SCREENS (RESET - SURE? YES? NO?; IMPORT - TEXT BOX AND TEXT LABEL TELLING YOU YOU CAN JUST REPLACE THE FILE; EXPORT - idk yet lmao; EDIT OVERLAY - good luck me :))
-        elementList.add(new Button(left, height / 4 + offset, w, 32, "Edit Overlay", 1.3f, Colors.LIGHTBLUE) {
+        // TODO add all functions + DIALOGUE SCREENS (IMPORT - TEXT BOX AND TEXT LABEL TELLING YOU YOU CAN JUST REPLACE THE FILE; EXPORT - idk yet lmao; EDIT OVERLAY - good luck me :))
+        elementList.add(new Button(this, left, height / 4 + offset, w, 32, "Edit Overlay", 1.3f, Colors.LIGHTBLUE) {
             @Override
             protected void action() {
 
             }
         });
 
-        elementList.add(new Button(left + xOffs, height / 4 + offset, w, 32, "Reset All", 1.3f, Colors.RED) {
+        elementList.add(new Button(this, left + xOffs, height / 4 + offset, w, 32, "Reset All", 1.3f, Colors.RED2) {
             @Override
             protected void action() {
-                for (Settings.AbstractSetting<?> setting : ConfigManager.settings.settingsList) {
-                    setting.reset();
-                }
-                for (ModGuiElement element : elementList) {
-                    element.updateStateFromBoundSetting();
-                }
+                Minecraft.getMinecraft().displayGuiScreen(new GuiResetAllConfirmation(GuiModConfig.this));
             }
         });
 
-        elementList.add(new Button(left, height / 4 + offset + 40, w, 32, "Import Settings", 1.3f, Colors.GREEN) {
+        elementList.add(new Button(this, left, height / 4 + offset + 40, w, 32, "Import Settings", 1.3f, Colors.GREEN2) {
             @Override
             protected void action() {
-
+                Minecraft.getMinecraft().displayGuiScreen(new GuiImportSettings(GuiModConfig.this));
             }
         });
 
-        elementList.add(new Button(left + xOffs, height / 4 + offset + 40, w, 32, "Export Settings", 1.3f, Colors.WHITE) {
+        elementList.add(new Button(this, left + xOffs, height / 4 + offset + 40, w, 32, "Export Settings", 1.3f, Colors.YELLOW2) {
             @Override
             protected void action() {
-
+                Minecraft.getMinecraft().displayGuiScreen(new GuiExportSettings(GuiModConfig.this));
             }
         });
 
@@ -128,11 +107,11 @@ public class GuiModConfig extends GuiScreen {
 
     /** helper methods for adding GUI elements */
     private void addTitleLabel(String text, int y) {
-        elementList.add(new TextLabel(text, width * 9/16 - fontRendererObj.getStringWidth(text), y, 2f, Integer.MAX_VALUE, Colors.WHITE));
+        elementList.add(new TextLabel(this, text, width * 9/16 - fontRendererObj.getStringWidth(text), y, 2f, Integer.MAX_VALUE, Colors.WHITE));
     }
 
     private void addSection(String name) {
-        MenuSectionLabel label = new MenuSectionLabel(name, width / 16, height / 4 + sections * 18, 1.5f, width / 8, offset + height / 4);
+        MenuSectionLabel label = new MenuSectionLabel(this, name, width / 16, height / 4 + sections * 18, 1.5f, width / 8, offset + height / 4);
         label.scrollable = false;
         elementList.add(label);
         addTitleLabel(name, height / 4 + offset + 12);
@@ -148,7 +127,7 @@ public class GuiModConfig extends GuiScreen {
         int prev = offset;
         addOtherStuff(setting, 32);
         elementList.add(new CheckBox(
-                setting,
+                this, setting,
                 right - 32, height / 4 + prev + (offset - prev) / 2 - 26,
                 enabledCondition
         ));
@@ -162,7 +141,7 @@ public class GuiModConfig extends GuiScreen {
         int prev = offset;
         addOtherStuff(setting, 162);
         elementList.add(new IntegerSlider(
-                setting,
+                this, setting,
                 right - 100, height / 4 + prev + (offset - prev) / 2 - 26,
                 enabledCondition
         ));
@@ -176,7 +155,7 @@ public class GuiModConfig extends GuiScreen {
         int prev = offset;
         addOtherStuff(setting, 162);
         elementList.add(new DecimalSlider(
-                setting,
+                this, setting,
                 right - 100, height / 4 + prev + (offset - prev) / 2 - 26,
                 enabledCondition
         ));
@@ -186,88 +165,9 @@ public class GuiModConfig extends GuiScreen {
         int top = height / 4 + offset;
         TextLabel name;
         TextLabel desc;
-        elementList.add(name = new TextLabel(setting.key, left, top, 1.3f, maxDescWidth - spaceNeeded));
-        elementList.add(desc = new TextLabel(setting.description, left, top + name.height + 3, maxDescWidth - spaceNeeded, Colors.GRAY));
-        elementList.add(new Line(left, right, desc.yPosition + desc.height + 9));
+        elementList.add(name = new TextLabel(this, setting.key, left, top, 1.3f, maxDescWidth - spaceNeeded));
+        elementList.add(desc = new TextLabel(this, setting.description, left, top + name.height + 3, maxDescWidth - spaceNeeded, Colors.GRAY));
+        elementList.add(new Line(this, left, right, desc.yPosition + desc.height + 9));
         offset += 24 + name.height + desc.height;
-    }
-
-    /** input handling methods */
-    private static void updateAmountScrolled() {
-        updateAmountScrolled(amountScrolled + Mouse.getEventDWheel() / 5);
-    }
-
-    public static void updateAmountScrolled(int newAmount) {
-        int before = amountScrolled;
-        amountScrolled = MathHelper.clamp_int(newAmount, Math.min(maxScrollHeight, 0), 0);
-        for (ModGuiElement e : elementList) {
-            if (e.scrollable)
-                e.yPosition += amountScrolled - before;
-        }
-    }
-
-    @Override
-    public void handleMouseInput() {
-        updateAmountScrolled();
-
-        int mouseX = Mouse.getEventX() * width / mc.displayWidth;
-        int mouseY = height - Mouse.getEventY() * height / mc.displayHeight - 1;
-
-        if (Mouse.getEventButtonState() && Mouse.getEventButton() == 0) {
-            selectedElement = null;
-            for (ModGuiElement e : elementList) {
-                if (mouseX > e.xPosition && mouseX < e.xPosition + e.width && mouseY > e.yPosition && mouseY < e.yPosition + e.height) {
-                    e.mousePressed();
-                    selectedElement = e;
-                } else {
-                    e.mousePressedGlobal();
-                }
-            }
-        }
-        else if (Mouse.getEventButton() == 0) {
-            for (ModGuiElement e : elementList) {
-                if (e == selectedElement) {
-                    e.mouseReleased();
-                } else {
-                    e.mouseReleasedGlobal();
-                }
-            }
-        }
-        else {
-            for (ModGuiElement e : elementList) {
-                if (mouseX > e.xPosition && mouseX < e.xPosition + e.width && mouseY > e.yPosition && mouseY < e.yPosition + e.height) {
-                    e.mouseHovering = true;
-                    e.mouseHovered();
-                } else if (e.mouseHovering) {
-                    e.mouseHovering = false;
-                    e.mouseStopHovered();
-                }
-            }
-        }
-        for (ModGuiElement e : elementList) e.mouseMovedGlobal(mouseX, mouseY);
-    }
-
-    @Override
-    protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        boolean close = true;
-        for (ModGuiElement e : elementList) {
-            if (e.keyTyped(typedChar, keyCode)) {
-                close = false;
-            }
-        }
-        if (close) {
-            super.keyTyped(typedChar, keyCode);
-        }
-    }
-
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        this.drawDefaultBackground();
-        for (ModGuiElement e : elementList) e.draw();
-    }
-
-    @Override
-    public void onGuiClosed() {
-        Keyboard.enableRepeatEvents(false);
     }
 }

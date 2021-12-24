@@ -29,6 +29,7 @@ public class DecimalSetting extends NumberSetting<BigDecimal> {
         BigDecimal d = new BigDecimal(string);
         if (canSet(d)) {
             value = d;
+            this.save();
             return true;
         } else {
             return false;

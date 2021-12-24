@@ -7,7 +7,12 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ResourceLocation;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -64,5 +69,22 @@ public class Helper {
         Gui.drawRect(left, top, left + 1, bottom, color);
         Gui.drawRect(left, bottom - 1, right, bottom, color);
         Gui.drawRect(right - 1, top, right, bottom, color);
+    }
+
+    public static void createDirectory(String name) {
+        try {
+            Files.createDirectories(Paths.get(name));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void createFile(Path path) {
+        try {
+            Files.createFile(path);
+        } catch (FileAlreadyExistsException ignored) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

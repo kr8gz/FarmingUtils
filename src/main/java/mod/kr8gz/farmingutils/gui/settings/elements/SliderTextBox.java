@@ -1,14 +1,15 @@
 package mod.kr8gz.farmingutils.gui.settings.elements;
 
+import mod.kr8gz.farmingutils.gui.settings.screens.ModGuiScreen;
 import test.kr8gz.settings.types.NumberSetting;
 
 import java.util.function.Supplier;
 
-public class SliderTextBox<S extends NumberSetting<T>, T> extends TextBox {
+public class SliderTextBox<S extends NumberSetting<T>, T> extends SettingTextBox {
     Slider<S, T> slider;
 
-    public SliderTextBox(Slider<S, T> slider, int x, int y, int width, int height, Supplier<Boolean> enabledCondition) {
-        super(slider.boundSetting, x, y, width, height, enabledCondition);
+    public SliderTextBox(ModGuiScreen screen, Slider<S, T> slider, int x, int y, int width, int height, Supplier<Boolean> enabledCondition) {
+        super(screen, slider.boundSetting, x, y, width, height, enabledCondition);
         this.slider = slider;
     }
 

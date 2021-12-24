@@ -1,5 +1,6 @@
 package mod.kr8gz.farmingutils.gui.settings;
 
+import mod.kr8gz.farmingutils.gui.settings.screens.GuiModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -59,7 +60,7 @@ public class CommandModConfig implements ICommand {
         @SubscribeEvent
         public void oneTickDelay(TickEvent.ClientTickEvent event) {
             if (tickFlag) {
-                Minecraft.getMinecraft().displayGuiScreen(new GuiModConfig());
+                Minecraft.getMinecraft().displayGuiScreen(new GuiModConfig(null));
                 tickFlag = false;
             }
         }

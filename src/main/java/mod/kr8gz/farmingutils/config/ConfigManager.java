@@ -10,7 +10,7 @@ import test.kr8gz.settings.types.ListSetting;
 import java.math.BigDecimal;
 
 public class ConfigManager {
-    public static final Settings settings = new Settings("config/" + FarmingUtils.MODID + ".cfg");
+    public static final Settings settings = new Settings(FarmingUtils.MODID + "/config/settings.txt");
 
     /** overlay settings */
     public static BooleanSetting showOverlay = new BooleanSetting(settings,
@@ -38,7 +38,7 @@ public class ConfigManager {
 
     /** bps settings */
     public static BooleanSetting showBPS = new BooleanSetting(settings,
-            "Show BPS", "Shows BPS overlay.", true
+            "Show BPS", "Shows Blocks Per Second overlay.", true
     );
 
     public static ListSetting<Integer> bpsTimes = new ListSetting<Integer>(settings,
@@ -121,7 +121,7 @@ public class ConfigManager {
 
     /** misc settings */
     public static BooleanSetting logInfo = new BooleanSetting(settings,
-            "Log Info", "Logs infos to a file for debugging purposes. Logs will be saved in .minecraft/logs/.farmingutils.log", false
+            "Log Info", "Logs infos to a file for debugging purposes. Logs will be saved in .minecraft/farmingutils/log.txt", false
     );
 
     static {

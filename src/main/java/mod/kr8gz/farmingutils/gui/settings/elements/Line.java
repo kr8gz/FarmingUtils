@@ -1,10 +1,11 @@
 package mod.kr8gz.farmingutils.gui.settings.elements;
 
+import mod.kr8gz.farmingutils.gui.settings.screens.ModGuiScreen;
 import mod.kr8gz.farmingutils.util.Colors;
 
 public class Line extends ModGuiElement {
-    public Line(int left, int right, int y) {
-        super(left, y, right - left, 1);
+    public Line(ModGuiScreen screen, int left, int right, int y) {
+        super(screen, left, y, right - left, 1);
     }
 
     @Override

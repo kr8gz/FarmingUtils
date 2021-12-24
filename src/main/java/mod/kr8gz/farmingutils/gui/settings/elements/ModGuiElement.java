@@ -1,8 +1,10 @@
 package mod.kr8gz.farmingutils.gui.settings.elements;
 
+import mod.kr8gz.farmingutils.gui.settings.screens.ModGuiScreen;
 import net.minecraft.client.gui.Gui;
 
 public abstract class ModGuiElement extends Gui {
+    public final ModGuiScreen screen;
     public int xPosition;
     public int yPosition;
     public int width;
@@ -10,7 +12,8 @@ public abstract class ModGuiElement extends Gui {
     public boolean mouseHovering;
     public boolean scrollable = true;
 
-    public ModGuiElement(int xPosition, int yPosition, int width, int height) {
+    public ModGuiElement(ModGuiScreen screen, int xPosition, int yPosition, int width, int height) {
+        this.screen = screen;
         this.xPosition = xPosition;
         this.yPosition = yPosition;
         this.width = width;
@@ -33,6 +36,6 @@ public abstract class ModGuiElement extends Gui {
         return false;
     }
 
-    /** for initializing and resetting {@code ModToggleableGuiElement}s used in the settings GUI */
+    /** for initializing and resetting {@code ModToggleableGuiElement}s used for settings */
     public void updateStateFromBoundSetting() {}
 }

@@ -1,7 +1,7 @@
 package mod.kr8gz.farmingutils.gui.settings.elements;
 
 import mod.kr8gz.farmingutils.FarmingUtils;
-import mod.kr8gz.farmingutils.gui.settings.GuiModConfig;
+import mod.kr8gz.farmingutils.gui.settings.screens.ModGuiScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.MathHelper;
@@ -20,21 +20,21 @@ public abstract class Slider<S extends NumberSetting<T>, T> extends ModToggleabl
     public final S boundSetting;
     SliderTextBox<S, T> sliderTextbox;
 
-    public Slider(S boundSetting, int x, int y) {
-        this(boundSetting, x, y, () -> true);
+    public Slider(ModGuiScreen screen, S boundSetting, int x, int y) {
+        this(screen, boundSetting, x, y, () -> true);
     }
 
-    public Slider(S boundSetting, int x, int y, Supplier<Boolean> enabledCondition) {
-        super(x, y, 100, 32, enabledCondition);
+    public Slider(ModGuiScreen screen, S boundSetting, int x, int y, Supplier<Boolean> enabledCondition) {
+        super(screen, x, y, 100, 32, enabledCondition);
         this.value = boundSetting.get();
         this.boundSetting = boundSetting;
         this.sliderTextbox = new SliderTextBox<>(
-                this,
+                screen, this,
                 x - 62, y + 6,
                 54, 20,
                 enabledCondition
         );
-        GuiModConfig.elementList.add(this.sliderTextbox);
+        screen.elementList.add(this.sliderTextbox);
         updateSliderPos(this.value);
     }
 

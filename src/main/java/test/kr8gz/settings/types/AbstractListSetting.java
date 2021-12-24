@@ -45,12 +45,14 @@ public abstract class AbstractListSetting<T> extends Settings.AbstractSetting<Li
                         values.add(newValue);
                         currentValue.setLength(0); // reset
                     } else {
+                        this.save();
                         return false;
                     }
                 }
                 isEscape = false;
             }
         }
+        this.save();
         return true;
     }
 

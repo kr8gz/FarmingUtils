@@ -21,6 +21,7 @@ public class IntegerSetting extends NumberSetting<Integer> {
         int i = Integer.parseInt(string);
         if (canSet(i)) {
             value = i;
+            this.save();
             return true;
         } else {
             return false;

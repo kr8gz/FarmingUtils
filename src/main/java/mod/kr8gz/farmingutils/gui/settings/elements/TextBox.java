@@ -1,12 +1,12 @@
 package mod.kr8gz.farmingutils.gui.settings.elements;
 
+import mod.kr8gz.farmingutils.gui.settings.screens.ModGuiScreen;
 import mod.kr8gz.farmingutils.util.Colors;
 import mod.kr8gz.farmingutils.util.Helper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.input.Keyboard;
-import test.kr8gz.settings.types.Setting;
 
 import java.util.function.Supplier;
 
@@ -14,38 +14,29 @@ public class TextBox extends ModToggleableGuiElement {
     int cursorPos = 0;
     boolean selected = false;
     boolean badInput = false;
-
     public String value;
-    public Setting<?> boundSetting;
 
-    public TextBox(Setting<?> boundSetting, int x, int y, int width, int height, Supplier<Boolean> enabledCondition) {
-        super(x, y, width, height, enabledCondition);
-        this.boundSetting = boundSetting;
-        this.updateStateFromBoundSetting();
+    public TextBox(ModGuiScreen screen, int xPosition, int yPosition, int width, int height) {
+        this(screen, xPosition, yPosition, width, height, () -> true);
     }
 
-    @Override
-    public void updateStateFromBoundSetting() {
-        this.value = boundSetting.get().toString();
+    public TextBox(ModGuiScreen screen, int xPosition, int yPosition, int width, int height, Supplier<Boolean> enabledCondition) {
+        super(screen, xPosition, yPosition, width, height, enabledCondition);
     }
 
-    private float getScale() {
+    protected void checkBadInput() {
+    }
+
+    float getLineScale() {
         return (float) (height - 8) / Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT;
     }
 
     @Override
     public void draw() {
-        int color;
-
         enabled = enabledCondition.get();
-        badInput = false;
-        try {
-            if (!boundSetting.setFromString(value)) {
-                badInput = true;
-            }
-        } catch (NumberFormatException e) {
-            badInput = true;
-        }
+        checkBadInput();
+
+        int color;
 
         if (enabled) {
             if (selected) {
@@ -69,7 +60,7 @@ public class TextBox extends ModToggleableGuiElement {
         drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, Colors.rgba(Colors.BLACK));
 
         FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
-        float scale = getScale();
+        float scale = getLineScale();
         Helper.glSetScale(scale);
         fr.drawStringWithShadow(value, (int) (xPosition / scale) + 4, (int) (yPosition / scale) + 4, enabled ? Colors.rgba(Colors.WHITE) : Colors.rgba(Colors.GRAY));
         if (selected) {
@@ -85,12 +76,12 @@ public class TextBox extends ModToggleableGuiElement {
         Helper.glResetScale();
     }
 
-    private void moveCursor(int delta) {
+    void moveCursor(int delta) {
         cursorPos += delta;
         cursorPos = MathHelper.clamp_int(cursorPos, 0, value.length());
     }
 
-    private void moveCursorToEnd() {
+    void moveCursorToEnd() {
         cursorPos = value.length();
     }
 
@@ -114,7 +105,7 @@ public class TextBox extends ModToggleableGuiElement {
                 selected = false;
             } else if (character >= 32) {
                 FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
-                if (fr.getStringWidth(value + character) * getScale() <= width - 8) {
+                if (fr.getStringWidth(value + character) * getLineScale() <= width - 8) {
                     value = value.substring(0, cursorPos) + character + value.substring(cursorPos);
                     moveCursor(1);
                 }

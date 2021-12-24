@@ -10,7 +10,14 @@ public class BooleanSetting extends Setting<Boolean> {
 
     @Override
     public boolean setFromString(String string) {
-        value = Boolean.parseBoolean(string);
+        if (string.equals("false")) {
+            value = false;
+        } else if (string.equals("true")) {
+            value = true;
+        } else {
+            return false;
+        }
+        this.save();
         return true;
     }
 }

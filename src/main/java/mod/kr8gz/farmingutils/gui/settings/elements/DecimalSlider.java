@@ -1,5 +1,6 @@
 package mod.kr8gz.farmingutils.gui.settings.elements;
 
+import mod.kr8gz.farmingutils.gui.settings.screens.ModGuiScreen;
 import test.kr8gz.settings.types.DecimalSetting;
 
 import java.math.BigDecimal;
@@ -7,12 +8,12 @@ import java.math.RoundingMode;
 import java.util.function.Supplier;
 
 public class DecimalSlider extends Slider<DecimalSetting, BigDecimal> {
-    public DecimalSlider(DecimalSetting boundSetting, int x, int y) {
-        super(boundSetting, x, y);
+    public DecimalSlider(ModGuiScreen screen, DecimalSetting boundSetting, int x, int y) {
+        super(screen, boundSetting, x, y);
     }
 
-    public DecimalSlider(DecimalSetting boundSetting, int x, int y, Supplier<Boolean> enabledCondition) {
-        super(boundSetting, x, y, enabledCondition);
+    public DecimalSlider(ModGuiScreen screen, DecimalSetting boundSetting, int x, int y, Supplier<Boolean> enabledCondition) {
+        super(screen, boundSetting, x, y, enabledCondition);
     }
 
     @Override
