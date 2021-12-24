@@ -7,8 +7,8 @@ import java.util.function.Supplier;
 public class SliderTextBox<S extends NumberSetting<T>, T> extends TextBox {
     Slider<S, T> slider;
 
-    public SliderTextBox(Slider<S, T> slider, int x, int y, int width, int height, String value, Supplier<Boolean> enabledCondition) {
-        super(slider.boundSetting, x, y, width, height, value, enabledCondition);
+    public SliderTextBox(Slider<S, T> slider, int x, int y, int width, int height, Supplier<Boolean> enabledCondition) {
+        super(slider.boundSetting, x, y, width, height, enabledCondition);
         this.slider = slider;
     }
 

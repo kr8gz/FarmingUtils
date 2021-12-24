@@ -6,17 +6,31 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
+import test.kr8gz.settings.Settings;
+import test.kr8gz.settings.types.BooleanSetting;
 
 public class KeybindManager {
+    private static final Settings toggleStates = new Settings("config/" + FarmingUtils.MODID + "-toggles.cfg");
+
     // step 1
-    private final KeyBinding    toggleOverlay;
-    public static boolean       showOverlay = true;
-    private final KeyBinding    toggleBPS;
-    public static boolean       showBPS = true;
-    private final KeyBinding    toggleAngleHelper;
-    public static boolean       showAngleHelper = true;
+    private final KeyBinding toggleOverlay;
+    public static BooleanSetting overlayToggled = new BooleanSetting(toggleStates,
+            "overlayToggled", null, false
+    );
+
+    private final KeyBinding toggleBPS;
+    public static BooleanSetting BPSToggled = new BooleanSetting(toggleStates,
+            "BPSToggled", null, false
+    );
+
+    private final KeyBinding toggleAngleHelper;
+    public static BooleanSetting angleHelperToggled = new BooleanSetting(toggleStates,
+            "angleHelperToggled", null, false
+    );
 
     public KeybindManager() {
+        toggleStates.init();
+
         // step 2
         toggleOverlay      = new KeyBinding("Toggle Overlay", Keyboard.KEY_O, FarmingUtils.NAME);
         toggleBPS          = new KeyBinding("Toggle BPS", Keyboard.KEY_B, FarmingUtils.NAME);
@@ -33,9 +47,9 @@ public class KeybindManager {
     public void tickEvent(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             // step 4
-            if (toggleOverlay.isPressed())      showOverlay = !showOverlay;
-            if (toggleBPS.isPressed())          showBPS = !showBPS;
-            if (toggleAngleHelper.isPressed())  showAngleHelper = !showAngleHelper;
+            if (toggleOverlay.isPressed())      overlayToggled.set(!overlayToggled.get());
+            if (toggleBPS.isPressed())          BPSToggled.set(!BPSToggled.get());
+            if (toggleAngleHelper.isPressed())  angleHelperToggled.set(!angleHelperToggled.get());
         }
     }
 }

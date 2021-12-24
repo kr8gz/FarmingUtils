@@ -27,7 +27,7 @@ public class Logger {
             List<String> lines = Files.readAllLines(logPath);
 
             lines.add("--- client tick " + OverlaySection.getCurrentTick() + " ---");
-            lines.add("brok rn :(");
+            lines.add("nothing to log for now");
 
             Files.write(logPath, lines);
         } catch (IOException e) {

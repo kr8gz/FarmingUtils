@@ -4,11 +4,13 @@ import test.kr8gz.settings.Settings;
 
 public abstract class Setting<T> extends Settings.AbstractSetting<T> {
     protected T value;
+    public final T defaultValue;
 
     public Setting(Settings settings,
                    String key, String description, T defaultValue) {
         super(settings, key, description);
         this.value = defaultValue;
+        this.defaultValue = defaultValue;
     }
 
     public boolean canSet(T newValue) {
@@ -28,6 +30,12 @@ public abstract class Setting<T> extends Settings.AbstractSetting<T> {
             this.save();
         }
         return canSet;
+    }
+
+    @Override
+    public void reset() {
+        this.value = defaultValue;
+        this.save();
     }
 
     @Override

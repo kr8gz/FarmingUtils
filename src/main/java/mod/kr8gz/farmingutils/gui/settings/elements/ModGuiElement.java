@@ -32,4 +32,7 @@ public abstract class ModGuiElement extends Gui {
     public boolean keyTyped(char character, int key) {
         return false;
     }
+
+    /** for initializing and resetting {@code ModToggleableGuiElement}s used in the settings GUI */
+    public void updateStateFromBoundSetting() {}
 }

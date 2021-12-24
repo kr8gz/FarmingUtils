@@ -83,6 +83,46 @@ public class GuiModConfig extends GuiScreen {
         addSection("Miscellaneous");
         addCheckBox(ConfigManager.logInfo);
 
+        // special buttons in misc section
+        int w = (right - left) / 2 - 4;
+        int xOffs = (right - left) / 2 + 4;
+
+        // TODO add all functions + DIALOGUE SCREENS (RESET - SURE? YES? NO?; IMPORT - TEXT BOX AND TEXT LABEL TELLING YOU YOU CAN JUST REPLACE THE FILE; EXPORT - idk yet lmao; EDIT OVERLAY - good luck me :))
+        elementList.add(new Button(left, height / 4 + offset, w, 32, "Edit Overlay", 1.3f, Colors.LIGHTBLUE) {
+            @Override
+            protected void action() {
+
+            }
+        });
+
+        elementList.add(new Button(left + xOffs, height / 4 + offset, w, 32, "Reset All", 1.3f, Colors.RED) {
+            @Override
+            protected void action() {
+                for (Settings.AbstractSetting<?> setting : ConfigManager.settings.settingsList) {
+                    setting.reset();
+                }
+                for (ModGuiElement element : elementList) {
+                    element.updateStateFromBoundSetting();
+                }
+            }
+        });
+
+        elementList.add(new Button(left, height / 4 + offset + 40, w, 32, "Import Settings", 1.3f, Colors.GREEN) {
+            @Override
+            protected void action() {
+
+            }
+        });
+
+        elementList.add(new Button(left + xOffs, height / 4 + offset + 40, w, 32, "Export Settings", 1.3f, Colors.WHITE) {
+            @Override
+            protected void action() {
+
+            }
+        });
+
+        offset += 80;
+
         maxScrollHeight = height * 3/4 - offset;
     }
 
@@ -147,9 +187,9 @@ public class GuiModConfig extends GuiScreen {
         TextLabel name;
         TextLabel desc;
         elementList.add(name = new TextLabel(setting.key, left, top, 1.3f, maxDescWidth - spaceNeeded));
-        elementList.add(desc = new TextLabel(setting.description, left, top + name.getHeight() + 3, maxDescWidth - spaceNeeded, Colors.GRAY));
-        elementList.add(new Line(left, right, desc.yPosition + desc.getHeight() + 9));
-        offset += 24 + name.getHeight() + desc.getHeight();
+        elementList.add(desc = new TextLabel(setting.description, left, top + name.height + 3, maxDescWidth - spaceNeeded, Colors.GRAY));
+        elementList.add(new Line(left, right, desc.yPosition + desc.height + 9));
+        offset += 24 + name.height + desc.height;
     }
 
     /** input handling methods */

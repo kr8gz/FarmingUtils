@@ -10,7 +10,7 @@ import test.kr8gz.settings.types.Setting;
 
 import java.util.function.Supplier;
 
-public class TextBox extends ModInteractableGuiElement {
+public class TextBox extends ModToggleableGuiElement {
     int cursorPos = 0;
     boolean selected = false;
     boolean badInput = false;
@@ -19,13 +19,14 @@ public class TextBox extends ModInteractableGuiElement {
     public Setting<?> boundSetting;
 
     public TextBox(Setting<?> boundSetting, int x, int y, int width, int height, Supplier<Boolean> enabledCondition) {
-        this(boundSetting, x, y, width, height, "", enabledCondition);
+        super(x, y, width, height, enabledCondition);
+        this.boundSetting = boundSetting;
+        this.updateStateFromBoundSetting();
     }
 
-    public TextBox(Setting<?> boundSetting, int x, int y, int width, int height, String value, Supplier<Boolean> enabledCondition) {
-        super(x, y, width, height, enabledCondition);
-        this.value = value;
-        this.boundSetting = boundSetting;
+    @Override
+    public void updateStateFromBoundSetting() {
+        this.value = boundSetting.get().toString();
     }
 
     private float getScale() {
@@ -35,7 +36,17 @@ public class TextBox extends ModInteractableGuiElement {
     @Override
     public void draw() {
         int color;
+
         enabled = enabledCondition.get();
+        badInput = false;
+        try {
+            if (!boundSetting.setFromString(value)) {
+                badInput = true;
+            }
+        } catch (NumberFormatException e) {
+            badInput = true;
+        }
+
         if (enabled) {
             if (selected) {
                 if (badInput) {
@@ -53,6 +64,7 @@ public class TextBox extends ModInteractableGuiElement {
         } else {
             color = Colors.rgba(Colors.GRAY);
         }
+
         drawRect(xPosition, yPosition, xPosition + width, yPosition + height, color);
         drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, Colors.rgba(Colors.BLACK));
 
@@ -106,14 +118,6 @@ public class TextBox extends ModInteractableGuiElement {
                     value = value.substring(0, cursorPos) + character + value.substring(cursorPos);
                     moveCursor(1);
                 }
-            }
-            badInput = false;
-            try {
-                if (!boundSetting.setFromString(value)) {
-                    badInput = true;
-                }
-            } catch (NumberFormatException e) {
-                badInput = true;
             }
             return true;
         }

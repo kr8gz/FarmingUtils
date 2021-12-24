@@ -29,16 +29,13 @@ public class TextLabel extends ModGuiElement {
         this.color = color;
     }
 
-    public int getHeight() {
+    int getHeight() {
         return (int) (Minecraft.getMinecraft().fontRendererObj.splitStringWidth(text, (int) (width / scale)) * scale);
-    }
-
-    public void setColor(int color) {
-        this.color = color;
     }
 
     @Override
     public void draw() {
+        height = getHeight();
         Helper.glSetScale(scale);
         Minecraft.getMinecraft().fontRendererObj.drawSplitString(text, (int) (xPosition / scale), (int) (yPosition / scale), (int) (width / scale), color);
         Helper.glResetScale();

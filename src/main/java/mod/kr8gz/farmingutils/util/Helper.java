@@ -2,6 +2,7 @@ package mod.kr8gz.farmingutils.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ResourceLocation;
@@ -56,5 +57,12 @@ public class Helper {
 
     public static boolean isDivisible(BigDecimal a, BigDecimal b) {
         return a.remainder(b).compareTo(BigDecimal.ZERO) == 0;
+    }
+
+    public static void drawEmptyRect(int left, int top, int right, int bottom, int color) {
+        Gui.drawRect(left, top, right, top + 1, color);
+        Gui.drawRect(left, top, left + 1, bottom, color);
+        Gui.drawRect(left, bottom - 1, right, bottom, color);
+        Gui.drawRect(right - 1, top, right, bottom, color);
     }
 }

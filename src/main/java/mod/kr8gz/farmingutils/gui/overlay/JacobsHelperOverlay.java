@@ -82,56 +82,54 @@ public class JacobsHelperOverlay extends OverlaySection {
 
     @Override
     protected boolean shouldRender() {
-        return isJacobsContest();
+        return ConfigManager.showJacobsHelper.get() && isJacobsContest();
     }
 
     @Override
     protected List<OverlayElement> getElementList() {
         List<OverlayElement> list = new ArrayList<>();
-        if (ConfigManager.showJacobsHelper.get() && isJacobsContest()) {
-            MedalData after20Minutes = getMedalDataAfter20Minutes();
-            MedalData currentMedalData = getCurrentMedalData();
-            if (currentMedalData == null) {
-                return list;
+        MedalData after20Minutes = getMedalDataAfter20Minutes();
+        MedalData currentMedalData = getCurrentMedalData();
+        if (currentMedalData == null) {
+            return list;
+        }
+
+        if (after20Minutes != null) {
+            // base jacob helper overlay
+            HashMap<String, String> map = new HashMap<>();
+            map.put(after20Minutes.name + " (20m)",  Helper.formatInt(after20Minutes.crops));
+
+            // extra alert-related overlays
+            int cropsRequiredForAlert = (int) (after20Minutes.crops * (100 + ConfigManager.alertExtraPercent.get()) / 100f);
+            int cropsUntilAlert = cropsRequiredForAlert - currentMedalData.crops;
+
+            if (ConfigManager.showCropsUntilAlert.get()) {
+                map.put("Crops until alert", Helper.formatInt(cropsUntilAlert));
+            }
+            if (ConfigManager.showTimeUntilAlert.get()) {
+                map.put("Time until alert", Helper.formatTime((int) ((double) cropsUntilAlert / (double) currentMedalData.crops * (double) getElapsedTime())));
             }
 
-            if (after20Minutes != null) {
-                // base jacob helper overlay
-                HashMap<String, String> map = new HashMap<>();
-                map.put(after20Minutes.name + " (20m)",  Helper.formatInt(after20Minutes.crops));
+            list.add(new OverlayTable(map));
 
-                // extra alert-related overlays
-                int cropsRequiredForAlert = (int) (after20Minutes.crops * (100 + ConfigManager.alertExtraPercent.get()) / 100f);
-                int cropsUntilAlert = cropsRequiredForAlert - currentMedalData.crops;
-
-                if (ConfigManager.showCropsUntilAlert.get()) {
-                    map.put("Crops until alert", Helper.formatInt(cropsUntilAlert));
-                }
-                if (ConfigManager.showTimeUntilAlert.get()) {
-                    map.put("Time until alert", Helper.formatTime((int) ((double) cropsUntilAlert / (double) currentMedalData.crops * (double) getElapsedTime())));
-                }
-
-                list.add(new OverlayTable(map));
-
-                // alert logic
-                if (ConfigManager.jacobsHelperAlert.get()) {
-                    if (currentMedalData.crops >= cropsRequiredForAlert) {
-                        if (alertTick == -1) {
-                            alertTick = getCurrentTick();
-                            Helper.playClientSound("random.orb");
-                        }
-                        if (getCurrentTick() - alertTick < 60) {
-                            drawAlert(after20Minutes.getColor(), EnumChatFormatting.BOLD + after20Minutes.name + EnumChatFormatting.RESET + " secured!");
-                        }
-                    } else {
-                        alertTick = -1;
+            // alert logic
+            if (ConfigManager.jacobsHelperAlert.get()) {
+                if (currentMedalData.crops >= cropsRequiredForAlert) {
+                    if (alertTick == -1) {
+                        alertTick = getCurrentTick();
+                        Helper.playClientSound("random.orb");
                     }
+                    if (getCurrentTick() - alertTick < 60) {
+                        drawAlert(after20Minutes.getColor(), EnumChatFormatting.BOLD + after20Minutes.name + EnumChatFormatting.RESET + " secured!");
+                    }
+                } else {
+                    alertTick = -1;
                 }
-
-            // probably "Updating ranking..."
-            } else if (ConfigManager.showWarnings.get()) {
-                list.add(new OverlayList(Colors.YELLOW, "Couldn't parse data", "for Jacob's Contest"));
             }
+
+        // probably "Updating ranking..."
+        } else if (ConfigManager.showWarnings.get()) {
+            list.add(new OverlayList(Colors.YELLOW, "Couldn't parse data", "for Jacob's Contest"));
         }
         return list;
     }

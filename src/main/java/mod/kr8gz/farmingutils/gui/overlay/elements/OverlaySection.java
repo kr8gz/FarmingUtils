@@ -43,7 +43,7 @@ public abstract class OverlaySection extends Gui {
     }
 
     public void draw() {
-        if (ConfigManager.showOverlay.get() && KeybindManager.showOverlay && shouldRender()) {
+        if (ConfigManager.showOverlay.get() && !KeybindManager.overlayToggled.get() && shouldRender()) {
             resetWidthAndHeight();
             float scale = ConfigManager.overlayScale.get().floatValue();
             Helper.glSetScale(scale);

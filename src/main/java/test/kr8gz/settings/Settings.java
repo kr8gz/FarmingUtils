@@ -41,6 +41,8 @@ public class Settings {
 
         public abstract boolean set(T newValue);
 
+        public abstract void reset();
+
         protected void save() {
             try {
                 List<String> tmp = new ArrayList<>();

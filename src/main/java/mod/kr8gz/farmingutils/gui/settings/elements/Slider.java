@@ -10,7 +10,7 @@ import test.kr8gz.settings.types.NumberSetting;
 
 import java.util.function.Supplier;
 
-public abstract class Slider<S extends NumberSetting<T>, T> extends ModInteractableGuiElement {
+public abstract class Slider<S extends NumberSetting<T>, T> extends ModToggleableGuiElement {
     static final ResourceLocation sliderTexture = new ResourceLocation(FarmingUtils.MODID, "textures/gui/slider.png");
 
     float sliderPos;
@@ -32,7 +32,6 @@ public abstract class Slider<S extends NumberSetting<T>, T> extends ModInteracta
                 this,
                 x - 62, y + 6,
                 54, 20,
-                this.value.toString(),
                 enabledCondition
         );
         GuiModConfig.elementList.add(this.sliderTextbox);
@@ -58,7 +57,14 @@ public abstract class Slider<S extends NumberSetting<T>, T> extends ModInteracta
     abstract void updateValue(float sliderPos);
 
     @Override
+    public void updateStateFromBoundSetting() {
+        this.value = boundSetting.get();
+        updateSliderPos(this.value);
+    }
+
+    @Override
     public void draw() {
+        this.updateStateFromBoundSetting();
         enabled = enabledCondition.get();
         GlStateManager.enableAlpha();
         GlStateManager.enableBlend();

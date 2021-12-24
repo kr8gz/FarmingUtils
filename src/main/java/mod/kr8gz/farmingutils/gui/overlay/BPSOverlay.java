@@ -94,26 +94,24 @@ public class BPSOverlay extends OverlaySection {
 
     @Override
     protected boolean shouldRender() {
-        return KeybindManager.showBPS;
+        return ConfigManager.showBPS.get() && !KeybindManager.BPSToggled.get();
     }
 
     @Override
     protected List<OverlayElement> getElementList() {
         List<OverlayElement> list = new ArrayList<>();
-        if (ConfigManager.showBPS.get()) {
-            if (isAlone()) {
-                HashMap<String, String> bpsMap = new HashMap<>();
-                for (int time : ConfigManager.bpsTimes.get()) {
-                    if (time == 1) {
-                        bpsMap.put(Helper.formatTime(time), String.valueOf(getBPS()));
-                    } else {
-                        bpsMap.put(Helper.formatTime(time), String.valueOf(getBPS(20 * time)));
-                    }
+        if (isAlone()) {
+            HashMap<String, String> bpsMap = new HashMap<>();
+            for (int time : ConfigManager.bpsTimes.get()) {
+                if (time == 1) {
+                    bpsMap.put(Helper.formatTime(time), String.valueOf(getBPS()));
+                } else {
+                    bpsMap.put(Helper.formatTime(time), String.valueOf(getBPS(20 * time)));
                 }
-                list.add(new OverlayTable(Colors.LIGHTBLUE, bpsMap));
-            } else if (ConfigManager.showWarnings.get()) {
-                list.add(new OverlayList(Colors.YELLOW, "More than 1 player", "in current world"));
             }
+            list.add(new OverlayTable(Colors.LIGHTBLUE, bpsMap));
+        } else if (ConfigManager.showWarnings.get()) {
+            list.add(new OverlayList(Colors.YELLOW, "More than 1 player", "in current world"));
         }
         return list;
     }

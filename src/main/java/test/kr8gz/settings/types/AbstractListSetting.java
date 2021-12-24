@@ -89,6 +89,7 @@ public abstract class AbstractListSetting<T> extends Settings.AbstractSetting<Li
         return success;
     }
 
+    @Override
     public void reset() {
         this.values = new ArrayList<>(this.defaultValues);
         this.save();

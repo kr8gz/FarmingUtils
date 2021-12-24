@@ -8,7 +8,7 @@ import test.kr8gz.settings.types.BooleanSetting;
 
 import java.util.function.Supplier;
 
-public class CheckBox extends ModInteractableGuiElement {
+public class CheckBox extends ModToggleableGuiElement {
     static final ResourceLocation checkboxTexture = new ResourceLocation(FarmingUtils.MODID, "textures/gui/checkbox.png");
 
     boolean state;
@@ -20,12 +20,18 @@ public class CheckBox extends ModInteractableGuiElement {
 
     public CheckBox(BooleanSetting boundSetting, int x, int y, Supplier<Boolean> enabledCondition) {
         super(x, y, 32, 32, enabledCondition);
-        this.state = boundSetting.get();
         this.boundSetting = boundSetting;
+        this.updateStateFromBoundSetting();
+    }
+
+    @Override
+    public void updateStateFromBoundSetting() {
+        this.state = boundSetting.get();
     }
 
     @Override
     public void draw() {
+        this.updateStateFromBoundSetting();
         enabled = enabledCondition.get();
         GlStateManager.enableAlpha();
         GlStateManager.enableBlend();

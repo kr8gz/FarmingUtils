@@ -2,6 +2,9 @@ package mod.kr8gz.farmingutils.gui.settings.elements;
 
 import mod.kr8gz.farmingutils.gui.settings.GuiModConfig;
 import mod.kr8gz.farmingutils.util.Colors;
+import mod.kr8gz.farmingutils.util.Helper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 
 public class MenuSectionLabel extends TextLabel {
     private final int sectionScrollAmount;
@@ -13,22 +16,43 @@ public class MenuSectionLabel extends TextLabel {
 
     @Override
     public void mouseHovered() {
-        setColor(Colors.LIGHTBLUE);
+        color = Colors.LIGHTBLUE;
     }
 
     @Override
     public void mouseStopHovered() {
-        setColor(Colors.WHITE);
+        color = Colors.WHITE;
     }
 
     @Override
     public void mousePressed() {
-        setColor(Colors.LIGHTBLUE);
+        color = Colors.LIGHTBLUE;
         GuiModConfig.updateAmountScrolled(sectionScrollAmount);
     }
 
     @Override
     public void mouseReleased() {
-        setColor(Colors.WHITE);
+        color = Colors.WHITE;
+    }
+
+    @Override
+    int getHeight() {
+        return (int) (scale * Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT);
+    }
+
+    @Override
+    public void draw() {
+        Helper.glSetScale(scale);
+        FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
+
+        int textWidth = (int) (fr.getStringWidth(text) * scale);
+        int ellipsisWidth = (int) (fr.getStringWidth("...") * scale);
+        String text1 = text;
+        if (textWidth > width && textWidth > ellipsisWidth) {
+            text1 = fr.trimStringToWidth(text1, (int) ((width - ellipsisWidth) / scale)).trim() + "...";
+        }
+        fr.drawStringWithShadow(text1, (int) ((xPosition + width) / scale) - fr.getStringWidth(text1), (int) (yPosition / scale), color);
+
+        Helper.glResetScale();
     }
 }

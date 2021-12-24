@@ -79,11 +79,11 @@ public class ConfigManager {
 
     /** angle helper settings */
     public static BooleanSetting showAngleHelper = new BooleanSetting(settings,
-            "Show Angle Helper", "Shows Angle Helper overlay.", false
+            "Show Angle Helper", "Shows Angle Helper overlay.", true
     );
 
     public static DecimalSetting angleHelperOpacity = new DecimalSetting(settings,
-            "Angle Helper Opacity", "Sets opacity of the Angle Helper overlay.", new BigDecimal("0.5"),
+            "Angle Helper Opacity", "Sets opacity of the Angle Helper overlay.", new BigDecimal("0.33"),
             new BigDecimal("0.1"), new BigDecimal("1"), new BigDecimal("0.01")
     );
 
@@ -106,7 +106,7 @@ public class ConfigManager {
     );
 
     public static BooleanSetting showPitch = new BooleanSetting(settings,
-            "Show Pitch", "Shows pitch in Angle Helper overlay.", false
+            "Show Pitch", "Shows pitch in Angle Helper overlay.", true
     );
 
     public static DecimalSetting angleHelperPitch = new DecimalSetting(settings,

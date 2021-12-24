@@ -13,7 +13,7 @@ public class AngleHelperOverlay extends Gui {
     final static Minecraft mc = Minecraft.getMinecraft();
 
     public static void draw() {
-        if (ConfigManager.showOverlay.get() && KeybindManager.showOverlay && ConfigManager.showAngleHelper.get() && KeybindManager.showAngleHelper) {
+        if (ConfigManager.showOverlay.get() && !KeybindManager.overlayToggled.get() && ConfigManager.showAngleHelper.get() && !KeybindManager.angleHelperToggled.get()) {
             int red     = Colors.rgba(Colors.RED, ConfigManager.angleHelperOpacity.get().doubleValue());
             int green   = Colors.rgba(Colors.GREEN, ConfigManager.angleHelperOpacity.get().doubleValue());
 
