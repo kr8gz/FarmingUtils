@@ -13,22 +13,22 @@ public class KeybindManager {
     private static final Settings toggleStates = new Settings(FarmingUtils.MODID + "/toggles.txt");
 
     // step 1
-    private final KeyBinding toggleOverlay;
-    public static BooleanSetting overlayToggled = new BooleanSetting(toggleStates,
+    private static final KeyBinding toggleOverlay;
+    public static final BooleanSetting overlayToggled = new BooleanSetting(toggleStates,
             "overlayToggled", null, false
     );
 
-    private final KeyBinding toggleBPS;
-    public static BooleanSetting BPSToggled = new BooleanSetting(toggleStates,
+    private static final KeyBinding toggleBPS;
+    public static final BooleanSetting BPSToggled = new BooleanSetting(toggleStates,
             "BPSToggled", null, false
     );
 
-    private final KeyBinding toggleAngleHelper;
-    public static BooleanSetting angleHelperToggled = new BooleanSetting(toggleStates,
+    private static final KeyBinding toggleAngleHelper;
+    public static final BooleanSetting angleHelperToggled = new BooleanSetting(toggleStates,
             "angleHelperToggled", null, false
     );
 
-    public KeybindManager() {
+    static {
         toggleStates.init();
 
         // step 2

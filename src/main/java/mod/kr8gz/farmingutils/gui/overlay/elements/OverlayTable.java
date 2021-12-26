@@ -22,13 +22,15 @@ public class OverlayTable extends OverlayElement {
 
     @Override
     int getWidth() {
-        return mc.fontRendererObj.getStringWidth(Collections.max(stringMap.keySet(), Comparator.comparing(String::length))) +
-                mc.fontRendererObj.getStringWidth(Collections.max(stringMap.values(), Comparator.comparing(String::length))) + 14;
+        return (int)
+                ((mc.fontRendererObj.getStringWidth(Collections.max(stringMap.keySet(), Comparator.comparing(String::length)))
+                + mc.fontRendererObj.getStringWidth(Collections.max(stringMap.values(), Comparator.comparing(String::length))) + 14)
+                * OverlaySection.getScale());
     }
 
     @Override
     int getHeight() {
-        return stringMap.size() * 10;
+        return (int) (stringMap.size() * 10 * OverlaySection.getScale());
     }
 
     @Override

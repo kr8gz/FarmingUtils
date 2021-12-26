@@ -23,6 +23,7 @@ public class GuiModConfig extends ModGuiScreen {
         super(parentScreen);
     }
 
+    @SuppressWarnings("Convert2MethodRef")
     @Override
     public void initGui() {
         super.initGui();
@@ -36,7 +37,7 @@ public class GuiModConfig extends ModGuiScreen {
         addTitleLabel(FarmingUtils.NAME + " Settings", height / 8 + offset);
         if (height / 8 < 20) offset = 20;
 
-        addSection("Overlay");
+        addSection("General");
         addCheckBox(ConfigManager.showOverlay);
         addCheckBox(ConfigManager.showWarnings, () -> ConfigManager.showOverlay.get());
         addIntegerSlider(ConfigManager.roudingPrecision, () -> ConfigManager.showOverlay.get());
@@ -71,29 +72,28 @@ public class GuiModConfig extends ModGuiScreen {
         int w = (right - left) / 2 - 4;
         int xOffs = (right - left) / 2 + 4;
 
-        // TODO add all functions + DIALOGUE SCREENS (IMPORT - TEXT BOX AND TEXT LABEL TELLING YOU YOU CAN JUST REPLACE THE FILE; EXPORT - idk yet lmao; EDIT OVERLAY - good luck me :))
-        elementList.add(new Button(this, left, height / 4 + offset, w, 32, "Edit Overlay", 1.3f, Colors.LIGHTBLUE) {
+        elementList.add(new Button(left, height / 4 + offset, w, 32, "Edit Overlay", 1.3f, Colors.LIGHTBLUE) {
             @Override
             protected void action() {
-
+                Minecraft.getMinecraft().displayGuiScreen(new GuiEditOverlay(GuiModConfig.this));
             }
         });
 
-        elementList.add(new Button(this, left + xOffs, height / 4 + offset, w, 32, "Reset All", 1.3f, Colors.RED2) {
+        elementList.add(new Button(left + xOffs, height / 4 + offset, w, 32, "Reset All", 1.3f, Colors.RED2) {
             @Override
             protected void action() {
                 Minecraft.getMinecraft().displayGuiScreen(new GuiResetAllConfirmation(GuiModConfig.this));
             }
         });
 
-        elementList.add(new Button(this, left, height / 4 + offset + 40, w, 32, "Import Settings", 1.3f, Colors.GREEN2) {
+        elementList.add(new Button(left, height / 4 + offset + 40, w, 32, "Import Settings", 1.3f, Colors.GREEN2) {
             @Override
             protected void action() {
                 Minecraft.getMinecraft().displayGuiScreen(new GuiImportSettings(GuiModConfig.this));
             }
         });
 
-        elementList.add(new Button(this, left + xOffs, height / 4 + offset + 40, w, 32, "Export Settings", 1.3f, Colors.YELLOW2) {
+        elementList.add(new Button(left + xOffs, height / 4 + offset + 40, w, 32, "Export Settings", 1.3f, Colors.YELLOW2) {
             @Override
             protected void action() {
                 Minecraft.getMinecraft().displayGuiScreen(new GuiExportSettings(GuiModConfig.this));
@@ -107,7 +107,7 @@ public class GuiModConfig extends ModGuiScreen {
 
     /** helper methods for adding GUI elements */
     private void addTitleLabel(String text, int y) {
-        elementList.add(new TextLabel(this, text, width * 9/16 - fontRendererObj.getStringWidth(text), y, 2f, Integer.MAX_VALUE, Colors.WHITE));
+        elementList.add(new TextLabel(text, width * 9/16 - fontRendererObj.getStringWidth(text), y, 2f, Integer.MAX_VALUE, Colors.WHITE));
     }
 
     private void addSection(String name) {
@@ -127,7 +127,7 @@ public class GuiModConfig extends ModGuiScreen {
         int prev = offset;
         addOtherStuff(setting, 32);
         elementList.add(new CheckBox(
-                this, setting,
+                setting,
                 right - 32, height / 4 + prev + (offset - prev) / 2 - 26,
                 enabledCondition
         ));
@@ -165,9 +165,9 @@ public class GuiModConfig extends ModGuiScreen {
         int top = height / 4 + offset;
         TextLabel name;
         TextLabel desc;
-        elementList.add(name = new TextLabel(this, setting.key, left, top, 1.3f, maxDescWidth - spaceNeeded));
-        elementList.add(desc = new TextLabel(this, setting.description, left, top + name.height + 3, maxDescWidth - spaceNeeded, Colors.GRAY));
-        elementList.add(new Line(this, left, right, desc.yPosition + desc.height + 9));
+        elementList.add(name = new TextLabel(setting.key, left, top, 1.3f, maxDescWidth - spaceNeeded));
+        elementList.add(desc = new TextLabel(setting.description, left, top + name.height + 3, maxDescWidth - spaceNeeded, Colors.GRAY));
+        elementList.add(new Line(left, right, desc.yPosition + desc.height + 9));
         offset += 24 + name.height + desc.height;
     }
 }

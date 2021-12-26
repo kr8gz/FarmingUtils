@@ -62,7 +62,9 @@ public class Settings {
         try {
             for (String line : Files.readAllLines(this.path)) {
                 int sep = line.indexOf('=');
-                map.put(line.substring(0, sep), line.substring(sep + 1));
+                if (sep != -1) {
+                    map.put(line.substring(0, sep), line.substring(sep + 1));
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

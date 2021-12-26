@@ -1,6 +1,5 @@
 package mod.kr8gz.farmingutils.gui.settings.elements;
 
-import mod.kr8gz.farmingutils.gui.settings.screens.ModGuiScreen;
 import mod.kr8gz.farmingutils.util.Colors;
 import mod.kr8gz.farmingutils.util.Helper;
 import net.minecraft.client.Minecraft;
@@ -16,18 +15,18 @@ public class TextBox extends ModToggleableGuiElement {
     boolean badInput = false;
     public String value;
 
-    public TextBox(ModGuiScreen screen, int xPosition, int yPosition, int width, int height) {
-        this(screen, xPosition, yPosition, width, height, () -> true);
+    public TextBox(int xPosition, int yPosition, int width, int height) {
+        this(xPosition, yPosition, width, height, () -> true);
     }
 
-    public TextBox(ModGuiScreen screen, int xPosition, int yPosition, int width, int height, Supplier<Boolean> enabledCondition) {
-        super(screen, xPosition, yPosition, width, height, enabledCondition);
+    public TextBox(int xPosition, int yPosition, int width, int height, Supplier<Boolean> enabledCondition) {
+        super(xPosition, yPosition, width, height, enabledCondition);
     }
 
     protected void checkBadInput() {
     }
 
-    float getLineScale() {
+    float getTextScale() {
         return (float) (height - 8) / Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT;
     }
 
@@ -60,7 +59,7 @@ public class TextBox extends ModToggleableGuiElement {
         drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, Colors.rgba(Colors.BLACK));
 
         FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
-        float scale = getLineScale();
+        float scale = getTextScale();
         Helper.glSetScale(scale);
         fr.drawStringWithShadow(value, (int) (xPosition / scale) + 4, (int) (yPosition / scale) + 4, enabled ? Colors.rgba(Colors.WHITE) : Colors.rgba(Colors.GRAY));
         if (selected) {
@@ -105,7 +104,7 @@ public class TextBox extends ModToggleableGuiElement {
                 selected = false;
             } else if (character >= 32) {
                 FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
-                if (fr.getStringWidth(value + character) * getLineScale() <= width - 8) {
+                if (fr.getStringWidth(value + character) * getTextScale() <= width - 8) {
                     value = value.substring(0, cursorPos) + character + value.substring(cursorPos);
                     moveCursor(1);
                 }

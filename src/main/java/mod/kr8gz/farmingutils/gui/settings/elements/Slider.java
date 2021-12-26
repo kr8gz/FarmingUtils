@@ -25,11 +25,11 @@ public abstract class Slider<S extends NumberSetting<T>, T> extends ModToggleabl
     }
 
     public Slider(ModGuiScreen screen, S boundSetting, int x, int y, Supplier<Boolean> enabledCondition) {
-        super(screen, x, y, 100, 32, enabledCondition);
+        super(x, y, 100, 32, enabledCondition);
         this.value = boundSetting.get();
         this.boundSetting = boundSetting;
         this.sliderTextbox = new SliderTextBox<>(
-                screen, this,
+                this,
                 x - 62, y + 6,
                 54, 20,
                 enabledCondition
@@ -76,7 +76,7 @@ public abstract class Slider<S extends NumberSetting<T>, T> extends ModToggleabl
     }
 
     @Override
-    public void mousePressed() {
+    public void mousePressed(int mouseX, int mouseY) {
         mouseDown = true;
     }
 

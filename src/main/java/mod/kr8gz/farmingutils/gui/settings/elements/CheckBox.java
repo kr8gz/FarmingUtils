@@ -1,7 +1,6 @@
 package mod.kr8gz.farmingutils.gui.settings.elements;
 
 import mod.kr8gz.farmingutils.FarmingUtils;
-import mod.kr8gz.farmingutils.gui.settings.screens.ModGuiScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
@@ -15,12 +14,12 @@ public class CheckBox extends ModToggleableGuiElement {
     boolean state;
     public final BooleanSetting boundSetting;
 
-    public CheckBox(ModGuiScreen screen, BooleanSetting boundSetting, int x, int y) {
-        this(screen, boundSetting, x, y, () -> true);
+    public CheckBox(BooleanSetting boundSetting, int x, int y) {
+        this(boundSetting, x, y, () -> true);
     }
 
-    public CheckBox(ModGuiScreen screen, BooleanSetting boundSetting, int x, int y, Supplier<Boolean> enabledCondition) {
-        super(screen, x, y, 32, 32, enabledCondition);
+    public CheckBox(BooleanSetting boundSetting, int x, int y, Supplier<Boolean> enabledCondition) {
+        super(x, y, 32, 32, enabledCondition);
         this.boundSetting = boundSetting;
         this.updateStateFromBoundSetting();
     }

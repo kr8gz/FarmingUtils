@@ -24,8 +24,8 @@ import java.util.List;
 public class BPSOverlay extends OverlaySection {
     private static final ArrayList<Integer> breaks = new ArrayList<>();
 
-    public BPSOverlay(int xPosition, int yPosition, int color) {
-        super(xPosition, yPosition, "BPS", color);
+    public BPSOverlay() {
+        super(ConfigManager.BPSPosX, ConfigManager.BPSPosY, "BPS", Colors.LIGHTBLUE);
     }
 
     private static int getBPS() {
@@ -94,7 +94,7 @@ public class BPSOverlay extends OverlaySection {
 
     @Override
     protected boolean shouldRender() {
-        return ConfigManager.showBPS.get() && !KeybindManager.BPSToggled.get();
+        return super.shouldRender() && ConfigManager.showBPS.get() && !KeybindManager.BPSToggled.get();
     }
 
     @Override

@@ -7,11 +7,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 
 public class MenuSectionLabel extends TextLabel {
+    private final ModGuiScreen screen;
     private final int sectionScrollAmount;
 
     public MenuSectionLabel(ModGuiScreen screen, String text, int x, int y, float scale, int maxWidth, int sectionScrollAmount) {
-        super(screen, text, x, y, scale, maxWidth);
+        super(text, x, y, scale, maxWidth);
+        this.screen = screen;
         this.sectionScrollAmount = -sectionScrollAmount;
+
     }
 
     @Override
@@ -25,7 +28,7 @@ public class MenuSectionLabel extends TextLabel {
     }
 
     @Override
-    public void mousePressed() {
+    public void mousePressed(int mouseX, int mouseY) {
         color = Colors.LIGHTBLUE;
         screen.updateAmountScrolled(sectionScrollAmount);
     }

@@ -1,6 +1,5 @@
 package mod.kr8gz.farmingutils.gui.settings.elements;
 
-import mod.kr8gz.farmingutils.gui.settings.screens.ModGuiScreen;
 import mod.kr8gz.farmingutils.util.Colors;
 import mod.kr8gz.farmingutils.util.Helper;
 import net.minecraft.client.Minecraft;
@@ -15,12 +14,12 @@ public abstract class Button extends ModToggleableGuiElement {
 
     boolean mouseOver;
 
-    public Button(ModGuiScreen screen, int xPosition, int yPosition, int width, int height, String text, float textScale, int color) {
-        this(screen, xPosition, yPosition, width, height, text, textScale, color, () -> true);
+    public Button(int xPosition, int yPosition, int width, int height, String text, float textScale, int color) {
+        this(xPosition, yPosition, width, height, text, textScale, color, () -> true);
     }
 
-    public Button(ModGuiScreen screen, int xPosition, int yPosition, int width, int height, String text, float textScale, int color, Supplier<Boolean> enabledCondition) {
-        super(screen, xPosition, yPosition, width, height, enabledCondition);
+    public Button(int xPosition, int yPosition, int width, int height, String text, float textScale, int color, Supplier<Boolean> enabledCondition) {
+        super(xPosition, yPosition, width, height, enabledCondition);
         this.text = text;
         this.textScale = textScale;
         this.color = color;
@@ -39,7 +38,7 @@ public abstract class Button extends ModToggleableGuiElement {
     }
 
     @Override
-    public void mousePressed() {
+    public void mousePressed(int mouseX, int mouseY) {
         mouseOver = true;
     }
 

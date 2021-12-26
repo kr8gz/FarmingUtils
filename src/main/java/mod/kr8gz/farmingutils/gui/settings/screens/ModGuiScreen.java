@@ -8,6 +8,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class ModGuiScreen extends GuiScreen {
@@ -53,9 +54,11 @@ public abstract class ModGuiScreen extends GuiScreen {
 
         if (Mouse.getEventButtonState() && Mouse.getEventButton() == 0) {
             selectedElement = null;
-            for (ModGuiElement e : elementList) {
-                if (mouseX > e.xPosition && mouseX < e.xPosition + e.width && mouseY > e.yPosition && mouseY < e.yPosition + e.height) {
-                    e.mousePressed();
+            List<ModGuiElement> rList = new ArrayList<>(elementList);
+            Collections.reverse(rList);
+            for (ModGuiElement e : rList) {
+                if (mouseX > e.xPosition && mouseX < e.xPosition + e.width && mouseY > e.yPosition && mouseY < e.yPosition + e.height && selectedElement == null) {
+                    e.mousePressed(mouseX, mouseY);
                     selectedElement = e;
                 } else {
                     e.mousePressedGlobal();

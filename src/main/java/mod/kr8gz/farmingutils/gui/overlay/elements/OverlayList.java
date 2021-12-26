@@ -19,12 +19,14 @@ public class OverlayList extends OverlayElement {
 
     @Override
     int getWidth() {
-        return mc.fontRendererObj.getStringWidth(Collections.max(stringList, Comparator.comparing(String::length))) + 8;
+        return (int)
+                ((mc.fontRendererObj.getStringWidth(Collections.max(stringList, Comparator.comparing(String::length))) + 8)
+                * OverlaySection.getScale());
     }
 
     @Override
     int getHeight() {
-        return stringList.size() * 10;
+        return (int) (stringList.size() * 10 * OverlaySection.getScale());
     }
 
     @Override

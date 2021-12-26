@@ -30,7 +30,7 @@ public class FarmingUtils {
         MinecraftForge.EVENT_BUS.register(new OverlaySection.EventHandler());
         MinecraftForge.EVENT_BUS.register(new BPSOverlay.EventHandler());
         MinecraftForge.EVENT_BUS.register(new KeybindManager());
-        MinecraftForge.EVENT_BUS.register(new CommandModConfig.EventHandler());
+        MinecraftForge.EVENT_BUS.register(new CommandModConfig());
     }
 
     @SuppressWarnings("unused")

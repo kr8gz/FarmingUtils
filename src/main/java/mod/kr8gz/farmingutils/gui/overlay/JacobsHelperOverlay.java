@@ -19,8 +19,8 @@ import java.util.List;
 public class JacobsHelperOverlay extends OverlaySection {
     private int alertTick = -1;
 
-    public JacobsHelperOverlay(int xPosition, int yPosition, int color) {
-        super(xPosition, yPosition, "Jacob's Helper", color);
+    public JacobsHelperOverlay() {
+        super(ConfigManager.jacobPosX, ConfigManager.jacobPosY, "Jacob's Helper", Colors.YELLOW);
     }
 
     private static boolean isJacobsContest() {
@@ -82,19 +82,16 @@ public class JacobsHelperOverlay extends OverlaySection {
 
     @Override
     protected boolean shouldRender() {
-        return ConfigManager.showJacobsHelper.get() && isJacobsContest();
+        return super.shouldRender() && ConfigManager.showJacobsHelper.get() && isJacobsContest();
     }
 
     @Override
     protected List<OverlayElement> getElementList() {
         List<OverlayElement> list = new ArrayList<>();
-        MedalData after20Minutes = getMedalDataAfter20Minutes();
-        MedalData currentMedalData = getCurrentMedalData();
-        if (currentMedalData == null) {
-            return list;
-        }
+        MedalData after20Minutes = isPreviewMode() ? new MedalData("GOLD", 314159) : getMedalDataAfter20Minutes();
+        MedalData currentMedalData = isPreviewMode() ? new MedalData("GOLD", 206410) : getCurrentMedalData();
 
-        if (after20Minutes != null) {
+        if (currentMedalData != null && after20Minutes != null) {
             // base jacob helper overlay
             HashMap<String, String> map = new HashMap<>();
             map.put(after20Minutes.name + " (20m)",  Helper.formatInt(after20Minutes.crops));
@@ -107,7 +104,7 @@ public class JacobsHelperOverlay extends OverlaySection {
                 map.put("Crops until alert", Helper.formatInt(cropsUntilAlert));
             }
             if (ConfigManager.showTimeUntilAlert.get()) {
-                map.put("Time until alert", Helper.formatTime((int) ((double) cropsUntilAlert / (double) currentMedalData.crops * (double) getElapsedTime())));
+                map.put("Time until alert", Helper.formatTime((int) ((double) cropsUntilAlert / (double) currentMedalData.crops * (double) (isPreviewMode() ? 750 : getElapsedTime()))));
             }
 
             list.add(new OverlayTable(map));
