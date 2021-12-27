@@ -22,12 +22,17 @@ public class AngleHelperOverlay extends Gui {
 
             double yawDiff      = ConfigManager.angleHelperYaw.get().doubleValue() - Helper.round(MathHelper.wrapAngleTo180_double(mc.thePlayer.rotationYaw), 1);
             double pitchDiff    = ConfigManager.angleHelperPitch.get().doubleValue() - Helper.round(MathHelper.wrapAngleTo180_double(mc.thePlayer.rotationPitch), 1);
+            if (yawDiff > 180) {
+                yawDiff -= 180;
+            } else if (yawDiff < -180) {
+                yawDiff += 180;
+            }
 
             // yaw logic
             if (ConfigManager.showYaw.get() && (ConfigManager.oppositeYaw.get() || Math.abs(yawDiff) < 90)) {
                 double yawTolerance = ConfigManager.yawTolerance.get().doubleValue();
-                int left    = (int) Math.round(width / 2d + width * Math.tan(Math.toRadians(yawDiff + yawTolerance)));
-                int right   = (int) Math.round(width / 2d + width * Math.tan(Math.toRadians(yawDiff - yawTolerance)));
+                int left    = Helper.round(width / 2d + width * Math.tan(Math.toRadians(yawDiff + yawTolerance)));
+                int right   = Helper.round(width / 2d + width * Math.tan(Math.toRadians(yawDiff - yawTolerance)));
                 if (left >= 0 && right <= width) {
                     drawRect(left, 0, left == right ? left + 1 : right, height, Math.abs(yawDiff) <= yawTolerance || 180 - Math.abs(yawDiff) <= yawTolerance ? green : red);
                 }
@@ -36,8 +41,8 @@ public class AngleHelperOverlay extends Gui {
             // pitch logic (basically the same as yaw)
             if (ConfigManager.showPitch.get() && Math.abs(pitchDiff) < 90) {
                 double pitchTolerance = ConfigManager.pitchTolerance.get().doubleValue();
-                int top     = (int) Math.round(height / 2d + height * Math.tan(Math.toRadians(pitchDiff + pitchTolerance)));
-                int bottom  = (int) Math.round(height / 2d + height * Math.tan(Math.toRadians(pitchDiff - pitchTolerance)));
+                int top     = Helper.round(height / 2d + height * Math.tan(Math.toRadians(pitchDiff + pitchTolerance)));
+                int bottom  = Helper.round(height / 2d + height * Math.tan(Math.toRadians(pitchDiff - pitchTolerance)));
                 if (top >= 0 && bottom <= height) {
                     drawRect(0, top, width, top == bottom ? top + 1 : bottom, Math.abs(pitchDiff) <= pitchTolerance ? green : red);
                 }

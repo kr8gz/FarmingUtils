@@ -19,6 +19,6 @@ public final class Colors {
     }
 
     public static int rgba(int rgb, double alpha) {
-        return ((int) (alpha * 255) << 24) + rgb;
+        return (Helper.round(alpha * 255) << 24) + rgb;
     }
 }

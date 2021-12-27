@@ -3,9 +3,7 @@ package mod.kr8gz.farmingutils.gui.overlay;
 import mod.kr8gz.farmingutils.config.ConfigManager;
 import mod.kr8gz.farmingutils.gui.KeybindManager;
 import mod.kr8gz.farmingutils.gui.overlay.elements.OverlayElement;
-import mod.kr8gz.farmingutils.gui.overlay.elements.OverlayList;
 import mod.kr8gz.farmingutils.gui.overlay.elements.OverlaySection;
-import mod.kr8gz.farmingutils.gui.overlay.elements.OverlayTable;
 import mod.kr8gz.farmingutils.util.Colors;
 import mod.kr8gz.farmingutils.util.Helper;
 import net.minecraft.client.multiplayer.ServerData;
@@ -18,7 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 
 public class BPSOverlay extends OverlaySection {
@@ -50,7 +48,8 @@ public class BPSOverlay extends OverlaySection {
 
     private static boolean isAlone() {
         ServerData serverData = mc.getCurrentServerData();
-        return mc.theWorld.playerEntities.size() == (serverData != null && serverData.serverIP.equals("hypixel.net") ? 2 : 1);
+        int limit = serverData != null && serverData.serverIP.equals("hypixel.net") ? 2 : 1;
+        return mc.theWorld.playerEntities.stream().filter(e -> e.getUniqueID().version() != 2).count() == limit;
     }
 
     @SuppressWarnings("unused")
@@ -100,18 +99,24 @@ public class BPSOverlay extends OverlaySection {
     @Override
     protected List<OverlayElement> getElementList() {
         List<OverlayElement> list = new ArrayList<>();
-        if (isAlone()) {
-            HashMap<String, String> bpsMap = new HashMap<>();
+        if (isAlone() || isPreviewMode()) {
+            List<List<String>> strings = new ArrayList<>();
             for (int time : ConfigManager.bpsTimes.get()) {
                 if (time == 1) {
-                    bpsMap.put(Helper.formatTime(time), String.valueOf(getBPS()));
+                    strings.add(Arrays.asList(
+                            Helper.formatTime(time),
+                            String.valueOf(isPreviewMode() ? 12 : getBPS())
+                    ));
                 } else {
-                    bpsMap.put(Helper.formatTime(time), String.valueOf(getBPS(20 * time)));
+                    strings.add(Arrays.asList(
+                            Helper.formatTime(time),
+                            String.valueOf(isPreviewMode() ? Helper.round(12.34567f, ConfigManager.roudingPrecision.get()) : getBPS(20 * time))
+                    ));
                 }
             }
-            list.add(new OverlayTable(Colors.LIGHTBLUE, bpsMap));
+            list.add(new OverlayElement(strings));
         } else if (ConfigManager.showWarnings.get()) {
-            list.add(new OverlayList(Colors.YELLOW, "More than 1 player", "in current world"));
+             list.add(new OverlayElement(Colors.YELLOW, "More than 1 player", "in current world"));
         }
         return list;
     }

@@ -61,14 +61,14 @@ public class TextBox extends ModToggleableGuiElement {
         FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
         float scale = getTextScale();
         Helper.glSetScale(scale);
-        fr.drawStringWithShadow(value, (int) (xPosition / scale) + 4, (int) (yPosition / scale) + 4, enabled ? Colors.rgba(Colors.WHITE) : Colors.rgba(Colors.GRAY));
+        fr.drawStringWithShadow(value, Helper.round(xPosition / scale) + 4, Helper.round(yPosition / scale) + 4, enabled ? Colors.rgba(Colors.WHITE) : Colors.rgba(Colors.GRAY));
         if (selected) {
             int pos = fr.getStringWidth(value.substring(0, cursorPos));
             drawRect(
-                    (int) (xPosition / scale) + 3 + pos,
-                    (int) (yPosition / scale) + 3,
-                    (int) (xPosition / scale) + 4 + pos,
-                    (int) (yPosition / scale) + 3 + fr.FONT_HEIGHT,
+                    Helper.round(xPosition / scale) + 3 + pos,
+                    Helper.round(yPosition / scale) + 3,
+                    Helper.round(xPosition / scale) + 4 + pos,
+                    Helper.round(yPosition / scale) + 3 + fr.FONT_HEIGHT,
                     Colors.rgba(Colors.WHITE)
             );
         }

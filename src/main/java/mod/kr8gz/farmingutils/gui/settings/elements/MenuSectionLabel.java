@@ -40,7 +40,7 @@ public class MenuSectionLabel extends TextLabel {
 
     @Override
     int getHeight() {
-        return (int) (scale * Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT);
+        return Helper.round(scale * Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT);
     }
 
     @Override
@@ -48,13 +48,13 @@ public class MenuSectionLabel extends TextLabel {
         Helper.glSetScale(scale);
         FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
 
-        int textWidth = (int) (fr.getStringWidth(text) * scale);
-        int ellipsisWidth = (int) (fr.getStringWidth("...") * scale);
+        int textWidth = Helper.round(fr.getStringWidth(text) * scale);
+        int ellipsisWidth = Helper.round(fr.getStringWidth("...") * scale);
         String text1 = text;
         if (textWidth > width && textWidth > ellipsisWidth) {
-            text1 = fr.trimStringToWidth(text1, (int) ((width - ellipsisWidth) / scale)).trim() + "...";
+            text1 = fr.trimStringToWidth(text1, Helper.round((width - ellipsisWidth) / scale)).trim() + "...";
         }
-        fr.drawStringWithShadow(text1, (int) ((xPosition + width) / scale) - fr.getStringWidth(text1), (int) (yPosition / scale), color);
+        fr.drawStringWithShadow(text1, Helper.round((xPosition + width) / scale) - fr.getStringWidth(text1), Helper.round(yPosition / scale), color);
 
         Helper.glResetScale();
     }

@@ -36,7 +36,7 @@ public class GuiEditOverlay extends ModGuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         for (ModGuiElement e : elementList) e.draw();
         Helper.glSetScale(1.3f);
-        drawCenteredString(Minecraft.getMinecraft().fontRendererObj, "Press Esc to finish", (int) (width / 2.6f), (int) ((height - 36) / 1.3f), Colors.WHITE);
+        drawCenteredString(Minecraft.getMinecraft().fontRendererObj, "Press Esc to finish", Helper.round(width / 2.6f), Helper.round((height - 36) / 1.3f), Colors.WHITE);
         Helper.glResetScale();
     }
 

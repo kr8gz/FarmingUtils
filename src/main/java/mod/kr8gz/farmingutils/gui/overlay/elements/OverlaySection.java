@@ -53,8 +53,8 @@ public abstract class OverlaySection extends ModGuiElement {
             int y = ySetting.get();
             xPosition = x < 0 ? screenWidth - width + x + 1 : x;
             yPosition = y < 0 ? screenHeight - height + y + 1 : y;
-            width = (int) ((mc.fontRendererObj.getStringWidth(name) + 8) * scale);
-            height = (int) (19 * scale);
+            width = Helper.round((mc.fontRendererObj.getStringWidth(name) + 8) * scale);
+            height = Helper.round(19 * scale);
 
             List<OverlayElement> elementList = getElementList();
             for (OverlayElement e : elementList) {
@@ -62,11 +62,11 @@ public abstract class OverlaySection extends ModGuiElement {
                 height += e.getHeight();
             }
 
-            x = (int) (xPosition / scale);
-            y = (int) (yPosition / scale);
+            x = Helper.round(xPosition / scale);
+            y = Helper.round(yPosition / scale);
 
             Helper.glSetScale(scale);
-            drawRect(x, y, x + (int) (width / scale), y + (int) (height / scale), Colors.rgba(Colors.BLACK, ConfigManager.overlayBackgroundOpacity.get().doubleValue()));
+            drawRect(x, y, x + Helper.round(width / scale), y + Helper.round(height / scale), Colors.rgba(Colors.BLACK, ConfigManager.overlayBackgroundOpacity.get().doubleValue()));
             mc.fontRendererObj.drawStringWithShadow(name, x + 4, y + 4, color);
 
             int offset = y + 17;

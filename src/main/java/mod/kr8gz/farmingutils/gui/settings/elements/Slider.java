@@ -2,6 +2,7 @@ package mod.kr8gz.farmingutils.gui.settings.elements;
 
 import mod.kr8gz.farmingutils.FarmingUtils;
 import mod.kr8gz.farmingutils.gui.settings.screens.ModGuiScreen;
+import mod.kr8gz.farmingutils.util.Helper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.MathHelper;
@@ -72,7 +73,7 @@ public abstract class Slider<S extends NumberSetting<T>, T> extends ModToggleabl
         Minecraft.getMinecraft().getTextureManager().bindTexture(sliderTexture);
         drawModalRectWithCustomSizedTexture(xPosition, yPosition, 0, 0, width, height, 108, 32);
         if (!enabled) GlStateManager.color(1f, 1f, 1f, 1f);
-        drawModalRectWithCustomSizedTexture(xPosition - 4 + (int) (sliderPos * 100), yPosition, 100, 0, 8, 32, 108, 32);
+        drawModalRectWithCustomSizedTexture(xPosition - 4 + Helper.round(sliderPos * 100), yPosition, 100, 0, 8, 32, 108, 32);
     }
 
     @Override

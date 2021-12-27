@@ -38,6 +38,14 @@ public class Helper {
         GlStateManager.popMatrix();
     }
 
+    public static int round(float value) {
+        return Math.round(value);
+    }
+
+    public static int round(double value) {
+        return (int) Math.round(value);
+    }
+
     public static float round(float value, int precision) {
         return (float) (Math.round(value * Math.pow(10, precision)) / Math.pow(10, precision));
     }

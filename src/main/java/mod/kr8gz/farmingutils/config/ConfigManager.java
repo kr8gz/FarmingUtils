@@ -58,20 +58,20 @@ public class ConfigManager {
     );
 
     public static final BooleanSetting jacobsHelperAlert = new BooleanSetting(settings,
-            "Jacob's Contests Helper Alert", "Shows alert when required crop count after 20 minutes for gold medal is reached.", true
+            "Jacob's Contests Helper Alert", "Shows an alert when required crop count after 20 minutes for a medal is reached.", true
     );
 
     public static final BooleanSetting showCropsUntilAlert = new BooleanSetting(settings,
-            "Show Crops Until Alert", "Shows crops needed until alert will be shown.", true
+            "Show Crops Until Alert", "Shows crops needed until alert.", true
     );
 
     public static final BooleanSetting showTimeUntilAlert = new BooleanSetting(settings,
-            "Show Time Until Alert", "Shows time needed until alert will be shown.", true
+            "Show Time Until Alert", "Shows time needed until alert.", true
     );
 
     public static final IntegerSetting alertExtraPercent = new IntegerSetting(settings,
             "Extra Percent Until Alert", "Alert will only be shown after reaching required crops + extra % specified here.", 5,
-            -50, 100, 1
+            0, 50, 1
     );
 
     /** angle helper settings */

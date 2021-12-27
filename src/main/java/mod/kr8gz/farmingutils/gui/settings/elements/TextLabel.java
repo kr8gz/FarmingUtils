@@ -30,14 +30,14 @@ public class TextLabel extends ModGuiElement {
     }
 
     int getHeight() {
-        return (int) (Minecraft.getMinecraft().fontRendererObj.splitStringWidth(text, (int) (width / scale)) * scale);
+        return Helper.round(Minecraft.getMinecraft().fontRendererObj.splitStringWidth(text, Helper.round(width / scale)) * scale);
     }
 
     @Override
     public void draw() {
         height = getHeight();
         Helper.glSetScale(scale);
-        Minecraft.getMinecraft().fontRendererObj.drawSplitString(text, (int) (xPosition / scale), (int) (yPosition / scale), (int) (width / scale), color);
+        Minecraft.getMinecraft().fontRendererObj.drawSplitString(text, Helper.round(xPosition / scale), Helper.round(yPosition / scale), Helper.round(width / scale), color);
         Helper.glResetScale();
     }
 }
