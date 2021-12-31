@@ -67,7 +67,7 @@ public class GuiModConfig extends ModGuiScreen {
         addDecimalSlider(angleHelperPitch, () -> enableOverlay.get() && enableAngleHelper.get() && enablePitch.get());
         addDecimalSlider(pitchTolerance, () -> enableOverlay.get() && enableAngleHelper.get() && enablePitch.get());
 
-        addSection("Breaking Helper");
+        addSection("Breaking Helper", "Note: because this overlay relies on BPS data, it will NOT work if there is more than one player in your current world.");
         addCheckBox(enableBlockBreakAlert, () -> enableOverlay.get());
         addDecimalSlider(blockBreakAlertDelay, () -> enableOverlay.get() && enableBlockBreakAlert.get());
         addCheckBox(lockYawAndPitch, () -> enableOverlay.get() && enableAngleHelper.get());
@@ -119,10 +119,21 @@ public class GuiModConfig extends ModGuiScreen {
     }
 
     private void addSection(String name) {
+        addSection(name, null);
+    }
+
+    private void addSection(String name, String info) {
         MenuSectionLabel label = new MenuSectionLabel(this, name, width / 20, height / 4 + sections * 18, 1.5f, width * 3 / 20, offset + height / 4);
         label.scrollable = false;
         elementList.add(label);
         addTitleLabel(name, height / 4 + offset + 12);
+
+        TextLabel infoLabel;
+        if (info != null) {
+            elementList.add(infoLabel = new TextLabel(info, left, height / 4 + offset + 38, right - left, Colors.YELLOW));
+            offset += infoLabel.height + 9;
+        }
+
         offset += 40;
         sections++;
     }

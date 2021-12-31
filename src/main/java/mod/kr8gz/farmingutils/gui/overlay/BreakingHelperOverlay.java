@@ -8,10 +8,14 @@ import mod.kr8gz.farmingutils.gui.overlay.elements.OverlaySection;
 import mod.kr8gz.farmingutils.util.Colors;
 import mod.kr8gz.farmingutils.util.Helper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.MouseHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Timer;
+import org.lwjgl.input.Mouse;
 
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,7 +28,40 @@ public class BreakingHelperOverlay extends OverlaySection {
     final MouseHelper customMouseHelper = new MouseHelper() {
         @Override
         public void mouseXYChange() {
-            deltaX = deltaY = 0;
+            deltaX = Mouse.getDX();
+            deltaY = Mouse.getDY();
+            if (AngleHelperOverlay.isValidAngles(0d, 0d)) {
+                // copied from EntityRenderer:1062 and modified
+                float f = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
+                float f1 = f * f * f * 8.0F;
+                float f2 = (float) deltaX * f1;
+                float f3 = (float) deltaY * f1;
+
+                if (mc.gameSettings.smoothCamera) {
+                    try {
+                        Field field = Minecraft.class.getDeclaredField("timer");
+                        Field field1 = EntityRenderer.class.getDeclaredField("smoothCamPartialTicks");
+                        Field field2 = EntityRenderer.class.getDeclaredField("smoothCamFilterX");
+                        Field field3 = EntityRenderer.class.getDeclaredField("smoothCamFilterY");
+                        field.setAccessible(true);
+                        field1.setAccessible(true);
+                        field2.setAccessible(true);
+                        field3.setAccessible(true);
+                        float f4 = ((Timer) field.get(mc)).renderPartialTicks - field1.getFloat(mc.entityRenderer);
+                        f2 = field2.getFloat(mc.entityRenderer) * f4;
+                        f3 = field3.getFloat(mc.entityRenderer) * f4;
+                    } catch (NoSuchFieldException | IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if (!AngleHelperOverlay.isValidAngles(f2 * 0.15D, 0d)) {
+                    deltaX = 0;
+                }
+                if (!AngleHelperOverlay.isValidAngles(0d, (mc.gameSettings.invertMouse ? f3 : -f3) * 0.15D)) {
+                    deltaY = 0;
+                }
+            }
         }
     };
 
@@ -43,7 +80,7 @@ public class BreakingHelperOverlay extends OverlaySection {
         active = !KeybindManager.breakingHelperToggled.get();
         color = active ? Colors.GREEN2 : Colors.RED2;
 
-        if (active && ConfigManager.lockYawAndPitch.get() && bps > 0 && ConfigManager.enableAngleHelper.get() && !KeybindManager.angleHelperToggled.get() && AngleHelperOverlay.isValidAngles()) {
+        if (active && super.shouldRender() && ConfigManager.lockYawAndPitch.get() && bps > 0 && ConfigManager.enableAngleHelper.get() && !KeybindManager.angleHelperToggled.get() && AngleHelperOverlay.isValidAngles(0d, 0d)) {
             if (lockTick != -1) {
                 if (getCurrentTick() - lockTick >= Helper.round(ConfigManager.lockYawAndPitchDelay.get().floatValue() * 20)) {
                     mc.mouseHelper = customMouseHelper;
@@ -52,14 +89,14 @@ public class BreakingHelperOverlay extends OverlaySection {
                 lockTick = getCurrentTick();
             }
         } else {
+            mc.mouseHelper = normalMouseHelper;
             lockTick = -1;
         }
 
-        if (bps == 0f && prevBPS > bps) {
-            if (active) {
+        if (bps == 0f && prevBPS > bps && super.shouldRender()) {
+            if (active && ConfigManager.enableBlockBreakAlert.get()) {
                 Helper.playClientSound("random.orb");
             }
-            mc.mouseHelper = normalMouseHelper;
         }
 
         prevBPS = bps;
@@ -73,6 +110,7 @@ public class BreakingHelperOverlay extends OverlaySection {
     @Override
     public void draw() {
         lockAndAlertStuff();
+
         if (ConfigManager.smallerBreakingHelperOverlayVersion.get() && (shouldRender() || isPreviewMode())) {
             width = height = Helper.round(8 * getScale());
             setXY();
