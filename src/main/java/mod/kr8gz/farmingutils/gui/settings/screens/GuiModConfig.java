@@ -1,7 +1,6 @@
 package mod.kr8gz.farmingutils.gui.settings.screens;
 
 import mod.kr8gz.farmingutils.FarmingUtils;
-import mod.kr8gz.farmingutils.config.ConfigManager;
 import mod.kr8gz.farmingutils.gui.settings.elements.*;
 import mod.kr8gz.farmingutils.util.Colors;
 import net.minecraft.client.Minecraft;
@@ -11,6 +10,8 @@ import test.kr8gz.settings.types.DecimalSetting;
 import test.kr8gz.settings.types.IntegerSetting;
 
 import java.util.function.Supplier;
+
+import static mod.kr8gz.farmingutils.config.ConfigManager.*;
 
 public class GuiModConfig extends ModGuiScreen {
     static int left;
@@ -38,36 +39,43 @@ public class GuiModConfig extends ModGuiScreen {
         if (height / 8 < 20) offset = 20;
 
         addSection("General");
-        addCheckBox(ConfigManager.showOverlay);
-        addCheckBox(ConfigManager.showWarnings, () -> ConfigManager.showOverlay.get());
-        addIntegerSlider(ConfigManager.roudingPrecision, () -> ConfigManager.showOverlay.get());
-        addDecimalSlider(ConfigManager.overlayScale, () -> ConfigManager.showOverlay.get());
-        addDecimalSlider(ConfigManager.overlayBackgroundOpacity, () -> ConfigManager.showOverlay.get());
+        addCheckBox(enableOverlay);
+        addCheckBox(showWarnings, () -> enableOverlay.get());
+        addIntegerSlider(roudingPrecision, () -> enableOverlay.get());
+        addDecimalSlider(overlayScale, () -> enableOverlay.get());
+        addDecimalSlider(overlayBackgroundOpacity, () -> enableOverlay.get());
 
         addSection("BPS");
-        addCheckBox(ConfigManager.showBPS, () -> ConfigManager.showOverlay.get());
-        // TODO someday ConfigManager.bpsTimes
+        addCheckBox(enableBPS, () -> enableOverlay.get());
+        // TODO someday bpsTimes
 
         addSection("Jacob's Helper");
-        addCheckBox(ConfigManager.showJacobsHelper, () -> ConfigManager.showOverlay.get());
-        addCheckBox(ConfigManager.jacobsHelperAlert, () -> ConfigManager.showOverlay.get() && ConfigManager.showJacobsHelper.get());
-        addCheckBox(ConfigManager.showCropsUntilAlert, () -> ConfigManager.showOverlay.get() && ConfigManager.showJacobsHelper.get() && ConfigManager.jacobsHelperAlert.get());
-        addCheckBox(ConfigManager.showTimeUntilAlert, () -> ConfigManager.showOverlay.get() && ConfigManager.showJacobsHelper.get() && ConfigManager.jacobsHelperAlert.get());
-        addIntegerSlider(ConfigManager.alertExtraPercent, () -> ConfigManager.showOverlay.get() && ConfigManager.showJacobsHelper.get() && ConfigManager.jacobsHelperAlert.get());
+        addCheckBox(enableJacobsHelper, () -> enableOverlay.get());
+        addCheckBox(jacobsHelperAlert, () -> enableOverlay.get() && enableJacobsHelper.get());
+        addCheckBox(showCropsUntilAlert, () -> enableOverlay.get() && enableJacobsHelper.get() && jacobsHelperAlert.get());
+        addCheckBox(showTimeUntilAlert, () -> enableOverlay.get() && enableJacobsHelper.get() && jacobsHelperAlert.get());
+        addIntegerSlider(alertExtraPercent, () -> enableOverlay.get() && enableJacobsHelper.get() && jacobsHelperAlert.get());
 
         addSection("Angle Helper");
-        addCheckBox(ConfigManager.showAngleHelper, () -> ConfigManager.showOverlay.get());
-        addDecimalSlider(ConfigManager.angleHelperOpacity, () -> ConfigManager.showOverlay.get() && ConfigManager.showAngleHelper.get());
-        addCheckBox(ConfigManager.showYaw, () -> ConfigManager.showOverlay.get() && ConfigManager.showAngleHelper.get());
-        addDecimalSlider(ConfigManager.angleHelperYaw, () -> ConfigManager.showOverlay.get() && ConfigManager.showAngleHelper.get() && ConfigManager.showYaw.get());
-        addDecimalSlider(ConfigManager.yawTolerance, () -> ConfigManager.showOverlay.get() && ConfigManager.showAngleHelper.get() && ConfigManager.showYaw.get());
-        addCheckBox(ConfigManager.oppositeYaw, () -> ConfigManager.showOverlay.get() && ConfigManager.showAngleHelper.get() && ConfigManager.showYaw.get());
-        addCheckBox(ConfigManager.showPitch, () -> ConfigManager.showOverlay.get() && ConfigManager.showAngleHelper.get());
-        addDecimalSlider(ConfigManager.angleHelperPitch, () -> ConfigManager.showOverlay.get() && ConfigManager.showAngleHelper.get() && ConfigManager.showPitch.get());
-        addDecimalSlider(ConfigManager.pitchTolerance, () -> ConfigManager.showOverlay.get() && ConfigManager.showAngleHelper.get() && ConfigManager.showPitch.get());
+        addCheckBox(enableAngleHelper, () -> enableOverlay.get());
+        addDecimalSlider(angleHelperOpacity, () -> enableOverlay.get() && enableAngleHelper.get());
+        addCheckBox(enableYaw, () -> enableOverlay.get() && enableAngleHelper.get());
+        addDecimalSlider(angleHelperYaw, () -> enableOverlay.get() && enableAngleHelper.get() && enableYaw.get());
+        addDecimalSlider(yawTolerance, () -> enableOverlay.get() && enableAngleHelper.get() && enableYaw.get());
+        addCheckBox(oppositeYaw, () -> enableOverlay.get() && enableAngleHelper.get() && enableYaw.get());
+        addCheckBox(enablePitch, () -> enableOverlay.get() && enableAngleHelper.get());
+        addDecimalSlider(angleHelperPitch, () -> enableOverlay.get() && enableAngleHelper.get() && enablePitch.get());
+        addDecimalSlider(pitchTolerance, () -> enableOverlay.get() && enableAngleHelper.get() && enablePitch.get());
+
+        addSection("Breaking Helper");
+        addCheckBox(enableBlockBreakAlert, () -> enableOverlay.get());
+        addDecimalSlider(blockBreakAlertDelay, () -> enableOverlay.get() && enableBlockBreakAlert.get());
+        addCheckBox(lockYawAndPitch, () -> enableOverlay.get() && enableAngleHelper.get());
+        addDecimalSlider(lockYawAndPitchDelay, () -> enableOverlay.get() && enableAngleHelper.get() && lockYawAndPitch.get());
+        addCheckBox(smallerBreakingHelperOverlayVersion, () -> enableOverlay.get() && (enableBlockBreakAlert.get() || (lockYawAndPitch.get() && enableAngleHelper.get())));
 
         addSection("Miscellaneous");
-        addCheckBox(ConfigManager.logInfo);
+        addCheckBox(logInfo);
 
         int w = (right - left) / 2 - 4;
         int xOffs = (right - left) / 2 + 4;
@@ -111,7 +119,7 @@ public class GuiModConfig extends ModGuiScreen {
     }
 
     private void addSection(String name) {
-        MenuSectionLabel label = new MenuSectionLabel(this, name, width / 16, height / 4 + sections * 18, 1.5f, width / 8, offset + height / 4);
+        MenuSectionLabel label = new MenuSectionLabel(this, name, width / 20, height / 4 + sections * 18, 1.5f, width * 3 / 20, offset + height / 4);
         label.scrollable = false;
         elementList.add(label);
         addTitleLabel(name, height / 4 + offset + 12);

@@ -2,6 +2,7 @@ package mod.kr8gz.farmingutils.gui.settings.screens;
 
 import mod.kr8gz.farmingutils.config.ConfigManager;
 import mod.kr8gz.farmingutils.gui.overlay.BPSOverlay;
+import mod.kr8gz.farmingutils.gui.overlay.BreakingHelperOverlay;
 import mod.kr8gz.farmingutils.gui.overlay.JacobsHelperOverlay;
 import mod.kr8gz.farmingutils.gui.settings.elements.ModGuiElement;
 import mod.kr8gz.farmingutils.util.Colors;
@@ -25,6 +26,13 @@ public class GuiEditOverlay extends ModGuiScreen {
         });
 
         elementList.add(new JacobsHelperOverlay() {
+            @Override
+            protected boolean isPreviewMode() {
+                return true;
+            }
+        });
+
+        elementList.add(new BreakingHelperOverlay() {
             @Override
             protected boolean isPreviewMode() {
                 return true;

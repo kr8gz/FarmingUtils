@@ -17,8 +17,8 @@ import java.util.List;
 public abstract class OverlaySection extends ModGuiElement {
     protected static final Minecraft mc = Minecraft.getMinecraft();
 
-    final OverlayPositionSetting xSetting;
-    final OverlayPositionSetting ySetting;
+    protected final OverlayPositionSetting xSetting;
+    protected final OverlayPositionSetting ySetting;
     public String name;
     public int color;
 
@@ -37,33 +37,35 @@ public abstract class OverlaySection extends ModGuiElement {
     protected abstract List<OverlayElement> getElementList();
 
     protected boolean shouldRender() {
-        return ConfigManager.showOverlay.get() && !KeybindManager.overlayToggled.get();
+        return ConfigManager.enableOverlay.get() && !KeybindManager.overlayToggled.get();
     }
 
     protected boolean isPreviewMode() {
         return false;
     }
 
+    /** call only after setting {@code width} and {@code height} */
+    protected void setXY() {
+        int x = xSetting.get();
+        int y = ySetting.get();
+        xPosition = x < 0 ? screenWidth - width + x + 1 : x;
+        yPosition = y < 0 ? screenHeight - height + y + 1 : y;
+    }
+
     @Override
     public void draw() {
         if (shouldRender() || isPreviewMode()) {
-            float scale = getScale();
-
-            int x = xSetting.get();
-            int y = ySetting.get();
-            xPosition = x < 0 ? screenWidth - width + x + 1 : x;
-            yPosition = y < 0 ? screenHeight - height + y + 1 : y;
             width = Helper.round((mc.fontRendererObj.getStringWidth(name) + 8) * scale);
             height = Helper.round(19 * scale);
-
             List<OverlayElement> elementList = getElementList();
             for (OverlayElement e : elementList) {
                 if (e.getWidth() > width) width = e.getWidth();
                 height += e.getHeight();
             }
+            setXY();
 
-            x = Helper.round(xPosition / scale);
-            y = Helper.round(yPosition / scale);
+            int x = Helper.round(xPosition / scale);
+            int y = Helper.round(yPosition / scale);
 
             Helper.glSetScale(scale);
             drawRect(x, y, x + Helper.round(width / scale), y + Helper.round(height / scale), Colors.rgba(Colors.BLACK, ConfigManager.overlayBackgroundOpacity.get().doubleValue()));

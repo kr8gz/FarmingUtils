@@ -26,7 +26,7 @@ public class BPSOverlay extends OverlaySection {
         super(ConfigManager.BPSPosX, ConfigManager.BPSPosY, "BPS", Colors.LIGHTBLUE);
     }
 
-    private static int getBPS() {
+    static int getBPS() {
         int s = 0;
         for (int b : breaks) {
             if (getCurrentTick() - b < 20) {
@@ -36,7 +36,7 @@ public class BPSOverlay extends OverlaySection {
         return s;
     }
 
-    private static float getBPS(int ticks) {
+    static float getBPS(int ticks) {
         int s = 0;
         for (int b : breaks) {
             if (getCurrentTick() - b < ticks) {
@@ -93,7 +93,7 @@ public class BPSOverlay extends OverlaySection {
 
     @Override
     protected boolean shouldRender() {
-        return super.shouldRender() && ConfigManager.showBPS.get() && !KeybindManager.BPSToggled.get();
+        return super.shouldRender() && ConfigManager.enableBPS.get() && !KeybindManager.BPSToggled.get();
     }
 
     @Override

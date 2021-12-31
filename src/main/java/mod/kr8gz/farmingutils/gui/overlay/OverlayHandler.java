@@ -9,7 +9,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class OverlayHandler {
     private static final OverlaySection
             BPSOverlay = new BPSOverlay(),
-            jacobsHelperOverlay = new JacobsHelperOverlay();
+            jacobsHelperOverlay = new JacobsHelperOverlay(),
+            breakingHelperOverlay = new BreakingHelperOverlay();
 
     @SuppressWarnings("unused")
     @SubscribeEvent
@@ -20,6 +21,7 @@ public class OverlayHandler {
             // overlays with editable position
             BPSOverlay.draw();
             jacobsHelperOverlay.draw();
+            breakingHelperOverlay.draw();
         }
     }
 }

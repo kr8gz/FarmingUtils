@@ -12,8 +12,14 @@ import net.minecraft.util.MathHelper;
 public class AngleHelperOverlay extends Gui {
     final static Minecraft mc = Minecraft.getMinecraft();
 
+    private static boolean validAngles;
+
+    public static boolean isValidAngles() {
+        return validAngles;
+    }
+
     public static void draw() {
-        if (ConfigManager.showOverlay.get() && !KeybindManager.overlayToggled.get() && ConfigManager.showAngleHelper.get() && !KeybindManager.angleHelperToggled.get()) {
+        if (ConfigManager.enableOverlay.get() && !KeybindManager.overlayToggled.get() && ConfigManager.enableAngleHelper.get() && !KeybindManager.angleHelperToggled.get()) {
             int red     = Colors.rgba(Colors.RED, ConfigManager.angleHelperOpacity.get().doubleValue());
             int green   = Colors.rgba(Colors.GREEN, ConfigManager.angleHelperOpacity.get().doubleValue());
 
@@ -28,25 +34,34 @@ public class AngleHelperOverlay extends Gui {
                 yawDiff += 180;
             }
 
-            // yaw logic
-            if (ConfigManager.showYaw.get() && (ConfigManager.oppositeYaw.get() || Math.abs(yawDiff) < 90)) {
+            boolean validYaw = true;
+            boolean validPitch = true;
+
+            if (ConfigManager.enableYaw.get() && (ConfigManager.oppositeYaw.get() || Math.abs(yawDiff) < 90)) {
                 double yawTolerance = ConfigManager.yawTolerance.get().doubleValue();
                 int left    = Helper.round(width / 2d + width * Math.tan(Math.toRadians(yawDiff + yawTolerance)));
                 int right   = Helper.round(width / 2d + width * Math.tan(Math.toRadians(yawDiff - yawTolerance)));
                 if (left >= 0 && right <= width) {
-                    drawRect(left, 0, left == right ? left + 1 : right, height, Math.abs(yawDiff) <= yawTolerance || 180 - Math.abs(yawDiff) <= yawTolerance ? green : red);
+                    validYaw = Math.abs(yawDiff) <= yawTolerance || 180 - Math.abs(yawDiff) <= yawTolerance;
+                    drawRect(left, 0, left == right ? left + 1 : right, height, validYaw ? green : red);
+                } else {
+                    validYaw = false;
                 }
             }
 
-            // pitch logic (basically the same as yaw)
-            if (ConfigManager.showPitch.get() && Math.abs(pitchDiff) < 90) {
+            if (ConfigManager.enablePitch.get() && Math.abs(pitchDiff) < 90) {
                 double pitchTolerance = ConfigManager.pitchTolerance.get().doubleValue();
                 int top     = Helper.round(height / 2d + height * Math.tan(Math.toRadians(pitchDiff + pitchTolerance)));
                 int bottom  = Helper.round(height / 2d + height * Math.tan(Math.toRadians(pitchDiff - pitchTolerance)));
                 if (top >= 0 && bottom <= height) {
-                    drawRect(0, top, width, top == bottom ? top + 1 : bottom, Math.abs(pitchDiff) <= pitchTolerance ? green : red);
+                    validPitch = Math.abs(pitchDiff) <= pitchTolerance;
+                    drawRect(0, top, width, top == bottom ? top + 1 : bottom, validPitch ? green : red);
+                } else {
+                    validPitch = false;
                 }
             }
+
+            validAngles = validYaw && validPitch;
         }
     }
 }

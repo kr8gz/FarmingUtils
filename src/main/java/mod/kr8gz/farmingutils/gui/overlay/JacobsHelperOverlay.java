@@ -36,7 +36,7 @@ public class JacobsHelperOverlay extends OverlaySection {
     @Override
     protected boolean shouldRender() {
         ServerData serverData = mc.getCurrentServerData();
-        return super.shouldRender() && ConfigManager.showJacobsHelper.get() && serverData != null && serverData.serverIP.equals("hypixel.net") && ScoreboardHelper.stringList().contains("Jacob's Contest");
+        return super.shouldRender() && ConfigManager.enableJacobsHelper.get() && serverData != null && serverData.serverIP.equals("hypixel.net") && ScoreboardHelper.stringList().contains("Jacob's Contest");
     }
 
     @Override

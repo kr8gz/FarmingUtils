@@ -11,7 +11,7 @@ public class OverlayElement {
     final static FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
     final List<List<String>> strings;
     final List<List<String>> stringsByColumn = new ArrayList<>();
-    int color;
+    int color = Colors.WHITE;
 
     public OverlayElement(List<List<String>> strings) {
         this(Colors.WHITE, strings);
