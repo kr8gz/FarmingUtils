@@ -6,7 +6,6 @@ import mod.kr8gz.farmingutils.gui.overlay.elements.OverlayElement;
 import mod.kr8gz.farmingutils.gui.overlay.elements.OverlaySection;
 import mod.kr8gz.farmingutils.util.Colors;
 import mod.kr8gz.farmingutils.util.Helper;
-import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
@@ -46,12 +45,6 @@ public class BPSOverlay extends OverlaySection {
         return Helper.round(s / (ticks / 20f), ConfigManager.roudingPrecision.get());
     }
 
-    private static boolean isAlone() {
-        ServerData serverData = mc.getCurrentServerData();
-        int limit = serverData != null && serverData.serverIP.equals("hypixel.net") ? 2 : 1;
-        return mc.theWorld.playerEntities.stream().filter(e -> e.getUniqueID().version() != 2).count() == limit;
-    }
-
     @SuppressWarnings("unused")
     public static class EventHandler {
         @SubscribeEvent
@@ -81,7 +74,8 @@ public class BPSOverlay extends OverlaySection {
 
             @Override
             public void playAuxSFX(EntityPlayer player, int sfxType, BlockPos blockPosIn, int p_180439_4_) {
-                if (isAlone() && sfxType == 2001) { // block break
+                StackTraceElement e = Thread.currentThread().getStackTrace()[4];
+                if (sfxType == 2001 && e.getClassName().equals("net.minecraft.client.multiplayer.PlayerControllerMP")) {
                     breaks.add(getCurrentTick());
                     if (getCurrentTick() - breaks.get(0) > 3600) {
                         breaks.remove(0);
@@ -99,25 +93,21 @@ public class BPSOverlay extends OverlaySection {
     @Override
     protected List<OverlayElement> getElementList() {
         List<OverlayElement> list = new ArrayList<>();
-        if (isAlone() || isPreviewMode()) {
-            List<List<String>> strings = new ArrayList<>();
-            for (int time : ConfigManager.bpsTimes.get()) {
-                if (time == 1) {
-                    strings.add(Arrays.asList(
-                            Helper.formatTime(time),
-                            String.valueOf(isPreviewMode() ? 12 : getBPS())
-                    ));
-                } else {
-                    strings.add(Arrays.asList(
-                            Helper.formatTime(time),
-                            String.valueOf(isPreviewMode() ? Helper.round(12.34567f, ConfigManager.roudingPrecision.get()) : getBPS(20 * time))
-                    ));
-                }
+        List<List<String>> strings = new ArrayList<>();
+        for (int time : ConfigManager.bpsTimes.get()) {
+            if (time == 1) {
+                strings.add(Arrays.asList(
+                        Helper.formatTime(time),
+                        String.valueOf(isPreviewMode() ? 12 : getBPS())
+                ));
+            } else {
+                strings.add(Arrays.asList(
+                        Helper.formatTime(time),
+                        String.valueOf(isPreviewMode() ? Helper.round(12.34567f, ConfigManager.roudingPrecision.get()) : getBPS(20 * time))
+                ));
             }
-            list.add(new OverlayElement(strings));
-        } else if (ConfigManager.showWarnings.get()) {
-             list.add(new OverlayElement(Colors.YELLOW, "More than 1 player", "in current world"));
         }
+        list.add(new OverlayElement(strings));
         return list;
     }
 }

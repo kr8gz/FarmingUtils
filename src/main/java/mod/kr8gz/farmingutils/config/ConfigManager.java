@@ -13,10 +13,6 @@ public class ConfigManager {
     public static final BooleanSetting enableOverlay = new BooleanSetting(settings,
             "Enable Overlay", "Shows overlay.", true
     );
-    
-    public static final BooleanSetting showWarnings = new BooleanSetting(settings,
-            "Show Warnings", "Shows warnings in overlay.", true
-    );
 
     public static final IntegerSetting roudingPrecision = new IntegerSetting(settings,
             "Rounding Precision", "Precision for rounding floating-point numbers.", 2,
@@ -39,7 +35,7 @@ public class ConfigManager {
     );
 
     public static final ListSetting<Integer> bpsTimes = new ListSetting<Integer>(settings,
-            "BPS Times", "Overlay will show the average BPS for each time specified here.", new Integer[]{1, 10, 60}
+            "BPS Times", "Overlay will show the average BPS for each time specified here.", new Integer[] {1, 10, 60}
     ) {
         @Override
         protected Integer parseSingleElementFromString(String string) {
