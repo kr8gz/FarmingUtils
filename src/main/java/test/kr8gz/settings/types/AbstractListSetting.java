@@ -4,22 +4,18 @@ import test.kr8gz.settings.Settings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class AbstractListSetting<T> extends Settings.AbstractSetting<List<T>> {
-    protected List<T> values;
-    protected final List<T> defaultValues;
+    List<T> values;
+    public final List<T> defaultValues;
 
     public AbstractListSetting(Settings settings,
                                String key, String description, T[] defaultValues) {
-        this(settings, key, description, new ArrayList<>(Arrays.asList(defaultValues)));
-    }
-
-    public AbstractListSetting(Settings settings,
-                               String key, String description, List<T> defaultValues) {
         super(settings, key, description);
-        this.values = defaultValues;
-        this.defaultValues = new ArrayList<>(defaultValues);
+        this.defaultValues = Arrays.asList(defaultValues);
+        this.values = new ArrayList<>(this.defaultValues);
     }
 
     @Override
@@ -56,13 +52,23 @@ public abstract class AbstractListSetting<T> extends Settings.AbstractSetting<Li
         return true;
     }
 
-    protected abstract T parseSingleElementFromString(String string);
+    public abstract T parseSingleElementFromString(String string);
 
-    public abstract boolean canSet(T e);
+    public boolean canSet(T e) {
+        return true;
+    }
 
     @Override
     public List<T> get() {
-        return this.values;
+        return Collections.unmodifiableList(this.values);
+    }
+
+    public T get(int index) {
+        return this.values.get(index);
+    }
+
+    public String getAsString(int index) {
+        return get(index).toString();
     }
 
     public boolean set(int index, T e) {

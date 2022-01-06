@@ -12,8 +12,8 @@ import java.util.function.Supplier;
 public class TextBox extends ModToggleableGuiElement {
     int cursorPos = 0;
     boolean selected = false;
-    boolean badInput = false;
-    public String value;
+    public boolean badInput = false;
+    public String value = "";
 
     public TextBox(int xPosition, int yPosition, int width, int height) {
         this(xPosition, yPosition, width, height, () -> true);
@@ -27,7 +27,7 @@ public class TextBox extends ModToggleableGuiElement {
     }
 
     float getTextScale() {
-        return (float) (height - 8) / Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT;
+        return height / 15f;
     }
 
     @Override

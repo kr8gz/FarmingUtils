@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 public class FarmingUtils {
     public static final String MODID = "farmingutils";
     public static final String NAME = "FarmingUtils";
-    public static final String VERSION = "v0.1.4-alpha";
+    public static final String VERSION = "v1.0.0";
 
     public FarmingUtils() {
         Helper.createDirectory(FarmingUtils.MODID + "/config");

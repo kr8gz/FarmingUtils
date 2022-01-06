@@ -1,7 +1,6 @@
 package mod.kr8gz.farmingutils.gui.settings.screens;
 
 import mod.kr8gz.farmingutils.gui.settings.elements.ModGuiElement;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.input.Keyboard;
@@ -15,7 +14,9 @@ public abstract class ModGuiScreen extends GuiScreen {
     ModGuiScreen parentScreen;
     int amountScrolled = 0;
     int maxScrollHeight;
-    public final List<ModGuiElement> elementList = new ArrayList<>();
+    /** when modifying the elementList with existing elements use nextElements instead */
+    public List<ModGuiElement> elementList = new ArrayList<>();
+    public List<ModGuiElement> nextElements = new ArrayList<>();
     ModGuiElement selectedElement;
 
     public ModGuiScreen(ModGuiScreen parentScreen) {
@@ -27,6 +28,7 @@ public abstract class ModGuiScreen extends GuiScreen {
         amountScrolled = 0;
         maxScrollHeight = 0;
         elementList.clear();
+        nextElements.clear();
         selectedElement = null;
         Keyboard.enableRepeatEvents(true);
     }
@@ -86,6 +88,12 @@ public abstract class ModGuiScreen extends GuiScreen {
             }
         }
         for (ModGuiElement e : elementList) e.mouseMovedGlobal(mouseX, mouseY);
+
+        if (nextElements.size() > 0) {
+            elementList = new ArrayList<>(nextElements);
+        } else {
+            nextElements = elementList;
+        }
     }
 
     @Override
@@ -97,7 +105,7 @@ public abstract class ModGuiScreen extends GuiScreen {
             }
         }
         if (close && keyCode == Keyboard.KEY_ESCAPE) {
-            Minecraft.getMinecraft().displayGuiScreen(parentScreen);
+            mc.displayGuiScreen(parentScreen);
         }
     }
 

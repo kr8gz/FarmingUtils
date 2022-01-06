@@ -7,7 +7,6 @@ import mod.kr8gz.farmingutils.gui.overlay.JacobsHelperOverlay;
 import mod.kr8gz.farmingutils.gui.settings.elements.ModGuiElement;
 import mod.kr8gz.farmingutils.util.Colors;
 import mod.kr8gz.farmingutils.util.Helper;
-import net.minecraft.client.Minecraft;
 
 public class GuiEditOverlay extends ModGuiScreen {
     public GuiEditOverlay(ModGuiScreen parentScreen) {
@@ -44,7 +43,7 @@ public class GuiEditOverlay extends ModGuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         for (ModGuiElement e : elementList) e.draw();
         Helper.glSetScale(1.3f);
-        drawCenteredString(Minecraft.getMinecraft().fontRendererObj, "Press Esc to finish", Helper.round(width / 2.6f), Helper.round((height - 36) / 1.3f), Colors.WHITE);
+        drawCenteredString(mc.fontRendererObj, "Press Esc to finish", Helper.round(width / 2.6f), Helper.round((height - 36) / 1.3f), Colors.WHITE);
         Helper.glResetScale();
     }
 

@@ -1,6 +1,7 @@
 package mod.kr8gz.farmingutils.config;
 
 import mod.kr8gz.farmingutils.FarmingUtils;
+import mod.kr8gz.farmingutils.util.Helper;
 import test.kr8gz.settings.Settings;
 import test.kr8gz.settings.types.*;
 
@@ -35,18 +36,38 @@ public class ConfigManager {
     );
 
     public static final ListSetting<Integer> bpsTimes = new ListSetting<Integer>(settings,
-            "BPS Times", "Overlay will show the average BPS for each time specified here.", new Integer[] {1, 10, 60}
+            "BPS Times", "Overlay will show the average BPS for each time specified here.", new Integer[] {1, 10, 60},
+            1, 5
     ) {
         @Override
-        protected Integer parseSingleElementFromString(String string) {
-            return Integer.parseInt(string);
+        public Integer parseSingleElementFromString(String string) {
+            if (string.matches("(\\d{1,2}m)?(\\d+s)?") && !string.equals("")) {
+                int minutes = 0;
+                int seconds = 0;
+                if (string.contains("m")) {
+                    minutes = Integer.parseInt(string.substring(0, string.indexOf('m')));
+                    if (string.contains("s")) {
+                        seconds = Integer.parseInt(string.substring(string.indexOf('m') + 1, string.indexOf('s')));
+                    }
+                } else {
+                    seconds = Integer.parseInt(string.substring(0, string.indexOf('s')));
+                }
+                return minutes * 60 + seconds;
+            } else {
+                return Integer.parseInt(string);
+            }
+        }
+
+        @Override
+        public String getAsString(int index) {
+            return Helper.formatTime(get(index));
         }
 
         @Override
         public boolean canSet(Integer e) {
-            return true;
+            return e > 0 && e <= 3600;
         }
-    }; // FIXME this is ugly
+    };
 
     /** jacobs helper settings */
     public static final BooleanSetting enableJacobsHelper = new BooleanSetting(settings,

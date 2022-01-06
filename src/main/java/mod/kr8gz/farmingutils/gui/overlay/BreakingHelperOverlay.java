@@ -7,15 +7,11 @@ import mod.kr8gz.farmingutils.gui.overlay.elements.OverlayElement;
 import mod.kr8gz.farmingutils.gui.overlay.elements.OverlaySection;
 import mod.kr8gz.farmingutils.util.Colors;
 import mod.kr8gz.farmingutils.util.Helper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.MouseHelper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Timer;
 import org.lwjgl.input.Mouse;
 
-import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,24 +32,6 @@ public class BreakingHelperOverlay extends OverlaySection {
                 float f1 = f * f * f * 8.0F;
                 float f2 = (float) deltaX * f1;
                 float f3 = (float) deltaY * f1;
-
-                if (mc.gameSettings.smoothCamera) {
-                    try {
-                        Field field = Minecraft.class.getDeclaredField("timer");
-                        Field field1 = EntityRenderer.class.getDeclaredField("smoothCamPartialTicks");
-                        Field field2 = EntityRenderer.class.getDeclaredField("smoothCamFilterX");
-                        Field field3 = EntityRenderer.class.getDeclaredField("smoothCamFilterY");
-                        field.setAccessible(true);
-                        field1.setAccessible(true);
-                        field2.setAccessible(true);
-                        field3.setAccessible(true);
-                        float f4 = ((Timer) field.get(mc)).renderPartialTicks - field1.getFloat(mc.entityRenderer);
-                        f2 = field2.getFloat(mc.entityRenderer) * f4;
-                        f3 = field3.getFloat(mc.entityRenderer) * f4;
-                    } catch (NoSuchFieldException | IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                }
 
                 if (!AngleHelperOverlay.isValidAngles(f2 * 0.15D, 0d)) {
                     deltaX = 0;
@@ -119,7 +97,7 @@ public class BreakingHelperOverlay extends OverlaySection {
             GlStateManager.enableAlpha();
             GlStateManager.enableBlend();
             GlStateManager.color(1f, 1f, 1f, 0.5f);
-            Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation(FarmingUtils.MODID, "textures/gui/toggle.png"));
+            mc.getTextureManager().bindTexture(new ResourceLocation(FarmingUtils.MODID, "textures/gui/toggle.png"));
             drawModalRectWithCustomSizedTexture((int) (xPosition / getScale()), (int) (yPosition / getScale()), active ? 8 : 0, 0, 8, 8, 16, 8);
             GlStateManager.color(1f, 1f, 1f, 1f);
             Helper.glResetScale();

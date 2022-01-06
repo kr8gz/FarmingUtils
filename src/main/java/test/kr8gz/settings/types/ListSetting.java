@@ -2,23 +2,33 @@ package test.kr8gz.settings.types;
 
 import test.kr8gz.settings.Settings;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public abstract class ListSetting<T> extends AbstractListSetting<T> {
+    public final int minValues;
+    public final int maxValues;
+
     public ListSetting(Settings settings,
                        String key, String description, T[] defaultValues) {
-        this(settings, key, description, new ArrayList<>(Arrays.asList(defaultValues)));
+        super(settings, key, description, defaultValues);
+        this.minValues = 0;
+        this.maxValues = Integer.MAX_VALUE;
     }
 
     public ListSetting(Settings settings,
-                       String key, String description, List<T> defaultValues) {
+                       String key, String description, T[] defaultValues, int minValues) {
         super(settings, key, description, defaultValues);
+        this.minValues = minValues;
+        this.maxValues = Integer.MAX_VALUE;
+    }
+
+    public ListSetting(Settings settings,
+                       String key, String description, T[] defaultValues, int minValues, int maxValues) {
+        super(settings, key, description, defaultValues);
+        this.minValues = minValues;
+        this.maxValues = maxValues;
     }
 
     public boolean add(T e) {
-        boolean canSet = this.canSet(e);
+        boolean canSet = this.canSet(e) && this.values.size() >= minValues && this.values.size() <= maxValues;
         if (canSet) {
             this.values.add(e);
             this.save();
@@ -27,7 +37,7 @@ public abstract class ListSetting<T> extends AbstractListSetting<T> {
     }
 
     public boolean add(int index, T e) {
-        boolean canSet = this.canSet(e);
+        boolean canSet = this.canSet(e) && this.values.size() >= minValues && this.values.size() <= maxValues;
         if (canSet) {
             this.values.add(index, e);
             this.save();

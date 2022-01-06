@@ -1,10 +1,9 @@
 package mod.kr8gz.farmingutils.gui.settings.screens;
 
 import mod.kr8gz.farmingutils.FarmingUtils;
-import mod.kr8gz.farmingutils.gui.settings.elements.Button;
 import mod.kr8gz.farmingutils.gui.settings.elements.FixedTextLabel;
+import mod.kr8gz.farmingutils.gui.settings.elements.TextButton;
 import mod.kr8gz.farmingutils.util.Colors;
-import net.minecraft.client.Minecraft;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
@@ -25,7 +24,7 @@ public class GuiExportSettings extends ModGuiScreen {
 
         elementList.add(new FixedTextLabel("Export Settings", width / 2, height / 2 - 17, 2f));
 
-        elementList.add(new Button(width / 4, height / 2 + 2, width / 4 - 4, 32, "Show File", 1.3f, Colors.YELLOW2) {
+        elementList.add(new TextButton(width / 4, height / 2 + 2, width / 4 - 4, 32, "Show File", 1.3f, Colors.YELLOW2) {
             @Override
             protected void action() {
                 try {
@@ -36,7 +35,7 @@ public class GuiExportSettings extends ModGuiScreen {
             }
         });
 
-        elementList.add(new Button(width / 2 + 4, height / 2 + 2, width / 4 - 4, 32, "Copy to Clipboard", 1.3f, Colors.LIGHTBLUE) {
+        elementList.add(new TextButton(width / 2 + 4, height / 2 + 2, width / 4 - 4, 32, "Copy to Clipboard", 1.3f, Colors.LIGHTBLUE) {
             @Override
             protected void action() {
                 try {
@@ -48,10 +47,10 @@ public class GuiExportSettings extends ModGuiScreen {
             }
         });
 
-        elementList.add(new Button(width / 4, height / 2 + 42, width / 2, 32, "Done", 1.3f, Colors.GREEN2) {
+        elementList.add(new TextButton(width / 4, height / 2 + 42, width / 2, 32, "Done", 1.3f, Colors.GREEN2) {
             @Override
             protected void action() {
-                Minecraft.getMinecraft().displayGuiScreen(parentScreen);
+                mc.displayGuiScreen(parentScreen);
             }
         });
     }

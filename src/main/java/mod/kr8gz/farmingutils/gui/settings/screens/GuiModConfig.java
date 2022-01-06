@@ -3,7 +3,6 @@ package mod.kr8gz.farmingutils.gui.settings.screens;
 import mod.kr8gz.farmingutils.FarmingUtils;
 import mod.kr8gz.farmingutils.gui.settings.elements.*;
 import mod.kr8gz.farmingutils.util.Colors;
-import net.minecraft.client.Minecraft;
 import test.kr8gz.settings.Settings;
 import test.kr8gz.settings.types.BooleanSetting;
 import test.kr8gz.settings.types.DecimalSetting;
@@ -16,6 +15,7 @@ import static mod.kr8gz.farmingutils.config.ConfigManager.*;
 public class GuiModConfig extends ModGuiScreen {
     static int left;
     static int right;
+    static int maxWidth;
     static int maxDescWidth;
     static int offset = 0;
     static int sections;
@@ -31,12 +31,13 @@ public class GuiModConfig extends ModGuiScreen {
 
         left = width / 4;
         right = width * 7/8;
-        maxDescWidth = right - left - 16;
-        offset = 0;
+        maxWidth = right - left;
+        maxDescWidth = maxWidth - 16;
+        offset = height / 4;
         sections = 0;
 
-        addTitleLabel(FarmingUtils.NAME + " Settings", height / 8 + offset);
-        if (height / 8 < 20) offset = 20;
+        addTitleLabel(FarmingUtils.NAME + " Settings", height / 8);
+        if (height / 8 < 20) offset += 20;
 
         addSection("General");
         addCheckBox(enableOverlay);
@@ -46,7 +47,7 @@ public class GuiModConfig extends ModGuiScreen {
 
         addSection("BPS");
         addCheckBox(enableBPS, () -> enableOverlay.get());
-        // TODO someday bpsTimes
+        addEditListButton(new GuiEditListSetting<>(this, bpsTimes), () -> enableOverlay.get() && enableBPS.get());
 
         addSection("Jacob's Helper");
         addCheckBox(enableJacobsHelper, () -> enableOverlay.get());
@@ -76,40 +77,40 @@ public class GuiModConfig extends ModGuiScreen {
         addSection("Miscellaneous");
         addCheckBox(logInfo);
 
-        int w = (right - left) / 2 - 4;
-        int xOffs = (right - left) / 2 + 4;
+        int w = maxWidth / 2 - 4;
+        int xOffs = maxWidth / 2 + 4;
 
-        elementList.add(new Button(left, height / 4 + offset, w, 32, "Edit Overlay", 1.3f, Colors.LIGHTBLUE) {
+        elementList.add(new TextButton(left, offset, w, 32, "Edit Overlay", 1.3f, Colors.LIGHTBLUE) {
             @Override
             protected void action() {
-                Minecraft.getMinecraft().displayGuiScreen(new GuiEditOverlay(GuiModConfig.this));
+                mc.displayGuiScreen(new GuiEditOverlay(GuiModConfig.this));
             }
         });
 
-        elementList.add(new Button(left + xOffs, height / 4 + offset, w, 32, "Reset All", 1.3f, Colors.RED2) {
+        elementList.add(new TextButton(left + xOffs, offset, w, 32, "Reset All", 1.3f, Colors.RED2) {
             @Override
             protected void action() {
-                Minecraft.getMinecraft().displayGuiScreen(new GuiResetAllConfirmation(GuiModConfig.this));
+                mc.displayGuiScreen(new GuiResetAllConfirmation(GuiModConfig.this));
             }
         });
 
-        elementList.add(new Button(left, height / 4 + offset + 40, w, 32, "Import Settings", 1.3f, Colors.GREEN2) {
+        elementList.add(new TextButton(left, offset + 40, w, 32, "Import Settings", 1.3f, Colors.GREEN2) {
             @Override
             protected void action() {
-                Minecraft.getMinecraft().displayGuiScreen(new GuiImportSettings(GuiModConfig.this));
+                mc.displayGuiScreen(new GuiImportSettings(GuiModConfig.this));
             }
         });
 
-        elementList.add(new Button(left + xOffs, height / 4 + offset + 40, w, 32, "Export Settings", 1.3f, Colors.YELLOW2) {
+        elementList.add(new TextButton(left + xOffs, offset + 40, w, 32, "Export Settings", 1.3f, Colors.YELLOW2) {
             @Override
             protected void action() {
-                Minecraft.getMinecraft().displayGuiScreen(new GuiExportSettings(GuiModConfig.this));
+                mc.displayGuiScreen(new GuiExportSettings(GuiModConfig.this));
             }
         });
 
         offset += 80;
 
-        maxScrollHeight = height * 3/4 - offset;
+        maxScrollHeight = height - offset;
     }
 
     /** helper methods for adding GUI elements */
@@ -118,14 +119,14 @@ public class GuiModConfig extends ModGuiScreen {
     }
 
     private void addSection(String name) {
-        MenuSectionLabel label = new MenuSectionLabel(this, name, width / 20, height / 4 + sections * 18, 1.5f, width * 3 / 20, offset + height / 4);
+        MenuSectionLabel label = new MenuSectionLabel(this, name, width / 20, height / 4 + sections * 18, 1.5f, width * 3 / 20, offset);
         label.scrollable = false;
         elementList.add(label);
-        addTitleLabel(name, height / 4 + offset + 12);
+        addTitleLabel(name, offset + 12);
 
 //        TextLabel infoLabel;
 //        if (info != null) {
-//            elementList.add(infoLabel = new TextLabel(info, left, height / 4 + offset + 38, right - left, Colors.YELLOW));
+//            elementList.add(infoLabel = new TextLabel(info, left, offset + 38, maxWidth, Colors.YELLOW));
 //            offset += infoLabel.height + 9;
 //        }
 
@@ -142,7 +143,7 @@ public class GuiModConfig extends ModGuiScreen {
         addOtherStuff(setting, 32);
         elementList.add(new CheckBox(
                 setting,
-                right - 32, height / 4 + prev + (offset - prev) / 2 - 26,
+                right - 32, prev + (offset - prev) / 2 - 26,
                 enabledCondition
         ));
     }
@@ -156,7 +157,7 @@ public class GuiModConfig extends ModGuiScreen {
         addOtherStuff(setting, 162);
         elementList.add(new IntegerSlider(
                 this, setting,
-                right - 100, height / 4 + prev + (offset - prev) / 2 - 26,
+                right - 100, prev + (offset - prev) / 2 - 26,
                 enabledCondition
         ));
     }
@@ -170,17 +171,31 @@ public class GuiModConfig extends ModGuiScreen {
         addOtherStuff(setting, 162);
         elementList.add(new DecimalSlider(
                 this, setting,
-                right - 100, height / 4 + prev + (offset - prev) / 2 - 26,
+                right - 100, prev + (offset - prev) / 2 - 26,
                 enabledCondition
         ));
     }
 
+    private void addEditListButton(GuiEditListSetting<?> screen) {
+        addEditListButton(screen, () -> true);
+    }
+
+    private void addEditListButton(GuiEditListSetting<?> screen, Supplier<Boolean> enabledCondition) {
+        int prev = offset;
+        addOtherStuff(screen.boundListSetting, 110);
+        elementList.add(new TextButton(right - 102, prev + (offset - prev) / 2 - 25, 100, 28, "Edit", 1.3f, Colors.WHITE, enabledCondition) {
+            @Override
+            protected void action() {
+                mc.displayGuiScreen(screen);
+            }
+        });
+    }
+
     private void addOtherStuff(Settings.AbstractSetting<?> setting, int spaceNeeded) {
-        int top = height / 4 + offset;
         TextLabel name;
         TextLabel desc;
-        elementList.add(name = new TextLabel(setting.key, left, top, 1.3f, maxDescWidth - spaceNeeded));
-        elementList.add(desc = new TextLabel(setting.description, left, top + name.height + 3, maxDescWidth - spaceNeeded, Colors.GRAY));
+        elementList.add(name = new TextLabel(setting.key, left, offset, 1.3f, maxDescWidth - spaceNeeded));
+        elementList.add(desc = new TextLabel(setting.description, left, offset + name.height + 3, maxDescWidth - spaceNeeded, Colors.GRAY));
         elementList.add(new Line(left, right, desc.yPosition + desc.height + 9));
         offset += 24 + name.height + desc.height;
     }
