@@ -16,11 +16,8 @@ import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+// TODO this class should not exist in this form
 public class Helper {
-    public static void sendDebugMessage(Object value) {
-        sendDebugMessage(String.valueOf(value));
-    }
-
     public static void sendDebugMessage(String value) {
         Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText("[DEBUG] " + value));
     }
@@ -29,13 +26,25 @@ public class Helper {
         Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation(name)));
     }
 
-    public static void glSetScale(float scale) {
+    public static void renderWithScale(float scale, Runnable runnable) {
         GlStateManager.pushMatrix();
         GlStateManager.scale(scale, scale, scale);
+
+        runnable.run();
+
+        GlStateManager.popMatrix();
     }
 
-    public static void glResetScale() {
-        GlStateManager.popMatrix();
+    public static void renderWithColor(int color, Runnable runnable) {
+        float a = ((color >> 24) & 0xFF) / 255f;
+        float r = ((color >> 16) & 0xFF) / 255f;
+        float g = ((color >> 8) & 0xFF) / 255f;
+        float b = (color & 0xFF) / 255f;
+        GlStateManager.color(r, g, b, a);
+
+        runnable.run();
+
+        GlStateManager.color(1f, 1f, 1f, 1f);
     }
 
     public static int round(float value) {

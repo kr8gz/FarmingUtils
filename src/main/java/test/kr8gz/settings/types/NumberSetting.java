@@ -2,7 +2,7 @@ package test.kr8gz.settings.types;
 
 import test.kr8gz.settings.Settings;
 
-public abstract class NumberSetting<T> extends Setting<T> {
+public abstract class NumberSetting<T> extends SimpleSetting<T> {
     public final T min;
     public final T max;
     public final T step;

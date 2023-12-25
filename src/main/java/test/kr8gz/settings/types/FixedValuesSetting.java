@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class FixedValuesSetting<T> extends Setting<T> {
-    protected List<T> allowed;
+public abstract class FixedValuesSetting<T> extends SimpleSetting<T> {
+    protected final List<T> allowed;
     protected int current;
 
     public FixedValuesSetting(Settings settings,

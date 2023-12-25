@@ -2,7 +2,7 @@ package test.kr8gz.settings.types;
 
 import test.kr8gz.settings.Settings;
 
-public class OverlayPositionSetting extends Setting<Integer> {
+public class OverlayPositionSetting extends SimpleSetting<Integer> {
     public OverlayPositionSetting(Settings settings, String key, Integer defaultValue) {
         super(settings, key, null, defaultValue);
     }
@@ -17,10 +17,5 @@ public class OverlayPositionSetting extends Setting<Integer> {
         } else {
             return false;
         }
-    }
-
-    @Override
-    public String toString() {
-        return this.key + "=" + this.get();
     }
 }

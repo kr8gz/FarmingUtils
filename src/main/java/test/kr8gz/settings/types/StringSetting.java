@@ -4,8 +4,8 @@ import test.kr8gz.settings.Settings;
 
 import java.util.regex.Pattern;
 
-public class StringSetting extends Setting<String> {
-    Pattern pattern;
+public class StringSetting extends SimpleSetting<String> {
+    final Pattern pattern;
 
     public StringSetting(Settings settings,
                          String key, String description, String defaultValue) {

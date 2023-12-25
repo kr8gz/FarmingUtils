@@ -22,12 +22,12 @@ public class ConfigManager {
 
     public static final DecimalSetting overlayScale = new DecimalSetting(settings,
             "Overlay Scale", "Sets scale of the overlay.", new BigDecimal("1.3"),
-            new BigDecimal("0.5"), new BigDecimal("3"), new BigDecimal("0.1")
+            new BigDecimal("0.5"), new BigDecimal("3.0"), new BigDecimal("0.1")
     );
 
     public static final DecimalSetting overlayBackgroundOpacity = new DecimalSetting(settings,
             "Overlay Background Opacity", "Sets opacity of the overlay background.", new BigDecimal("0.5"),
-            new BigDecimal("0"), new BigDecimal("1"), new BigDecimal("0.01")
+            new BigDecimal("0.0"), new BigDecimal("1.0"), new BigDecimal("0.01")
     );
 
     /** bps settings */
@@ -78,6 +78,11 @@ public class ConfigManager {
             "Jacob's Contests Helper Alert", "Shows an alert when required crop count after 20 minutes for a medal is reached.", true
     );
 
+    public static final DecimalSetting alertShowDuration = new DecimalSetting(settings,
+            "Alert Show Duration", "Alert will be shown for this many seconds.", new BigDecimal("3.0"),
+            new BigDecimal("1.0"), new BigDecimal("10.0"), new BigDecimal("0.1")
+    );
+
     public static final BooleanSetting showCropsUntilAlert = new BooleanSetting(settings,
             "Show Crops Until Alert", "Shows crops needed until alert.", true
     );
@@ -98,7 +103,7 @@ public class ConfigManager {
 
     public static final DecimalSetting angleHelperOpacity = new DecimalSetting(settings,
             "Angle Helper Opacity", "Sets opacity of the Angle Helper overlay.", new BigDecimal("0.33"),
-            new BigDecimal("0.1"), new BigDecimal("1"), new BigDecimal("0.01")
+            new BigDecimal("0.1"), new BigDecimal("1.0"), new BigDecimal("0.01")
     );
 
     public static final BooleanSetting enableYaw = new BooleanSetting(settings,
@@ -106,13 +111,13 @@ public class ConfigManager {
     );
 
     public static final DecimalSetting angleHelperYaw = new DecimalSetting(settings,
-            "Angle Helper Yaw", "Sets desired yaw.", new BigDecimal("0"),
-            new BigDecimal("-180"), new BigDecimal("180"), new BigDecimal("0.1")
+            "Angle Helper Yaw", "Sets desired yaw.", new BigDecimal("0.0"),
+            new BigDecimal("-180.0"), new BigDecimal("180.0"), new BigDecimal("0.1")
     );
 
     public static final DecimalSetting yawTolerance = new DecimalSetting(settings,
             "Yaw Tolerance", "Angle Helper will accept yaw +/- this setting.", new BigDecimal("0.5"),
-            new BigDecimal("0.1"), new BigDecimal("10"), new BigDecimal("0.1")
+            new BigDecimal("0.1"), new BigDecimal("10.0"), new BigDecimal("0.1")
     );
 
     public static final BooleanSetting oppositeYaw = new BooleanSetting(settings,
@@ -124,13 +129,13 @@ public class ConfigManager {
     );
 
     public static final DecimalSetting angleHelperPitch = new DecimalSetting(settings,
-            "Angle Helper Pitch", "Sets desired pitch.", new BigDecimal("0"),
-            new BigDecimal("-90"), new BigDecimal("90"), new BigDecimal("0.1")
+            "Angle Helper Pitch", "Sets desired pitch.", new BigDecimal("0.0"),
+            new BigDecimal("-90.0"), new BigDecimal("90.0"), new BigDecimal("0.1")
     );
 
     public static final DecimalSetting pitchTolerance = new DecimalSetting(settings,
             "Pitch Tolerance", "Angle Helper will accept pitch +/- this setting.", new BigDecimal("0.5"),
-            new BigDecimal("0.1"), new BigDecimal("10"), new BigDecimal("0.1")
+            new BigDecimal("0.1"), new BigDecimal("10.0"), new BigDecimal("0.1")
     );
 
     /** breaking helper settings */
@@ -140,7 +145,7 @@ public class ConfigManager {
 
     public static final DecimalSetting blockBreakAlertDelay = new DecimalSetting(settings,
             "Block Break Alert Delay", "Alert will trigger after you haven't broken a block for this many seconds.", new BigDecimal("0.5"),
-            new BigDecimal("0.1"), new BigDecimal("1"), new BigDecimal("0.1")
+            new BigDecimal("0.1"), new BigDecimal("1.0"), new BigDecimal("0.1")
     );
 
     public static final BooleanSetting lockYawAndPitch = new BooleanSetting(settings,
@@ -149,7 +154,7 @@ public class ConfigManager {
 
     public static final DecimalSetting lockYawAndPitchDelay = new DecimalSetting(settings,
             "Lock Delay", "The time which your angles have to be correct for in order to lock them.", new BigDecimal("0.5"),
-            new BigDecimal("0"), new BigDecimal("1"), new BigDecimal("0.1")
+            new BigDecimal("0.0"), new BigDecimal("1.0"), new BigDecimal("0.1")
     );
 
     public static final BooleanSetting smallerBreakingHelperOverlayVersion = new BooleanSetting(settings,
@@ -170,6 +175,6 @@ public class ConfigManager {
     public static final OverlayPositionSetting breakingHelperPosY = new OverlayPositionSetting(settings, "breakingHelperPosY", 4);
 
     static {
-        settings.init();
+        settings.load();
     }
 }

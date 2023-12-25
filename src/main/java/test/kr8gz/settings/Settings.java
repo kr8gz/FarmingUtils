@@ -56,8 +56,7 @@ public class Settings {
         public abstract String toString();
     }
 
-    /** this should be called only once just after initializing all your settings */
-    public void init() {
+    public void load() {
         HashMap<String, String> map = new HashMap<>();
         try {
             for (String line : Files.readAllLines(this.path)) {
