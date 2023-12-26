@@ -10,8 +10,12 @@ import org.lwjgl.input.Keyboard;
 import test.kr8gz.settings.Settings;
 import test.kr8gz.settings.BooleanSetting;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class ToggleKeybindHandler {
-    private static final Settings toggleStates = new Settings(FarmingUtils.MODID + "/toggles.txt");
+    public static final Path TOGGLE_STATES_PATH = Paths.get(FarmingUtils.MODID, "toggles.txt");
+    private static final Settings toggleStates = new Settings(TOGGLE_STATES_PATH);
 
     private final KeyBinding keyBinding;
     private final BooleanSetting setting;

@@ -146,11 +146,11 @@ public class GuiModConfig extends ModGuiScreen {
     }
 
     @FunctionalInterface
-    private interface SliderConstructor<S extends NumberSetting<T>, T> {
+    private interface SliderConstructor<S extends NumberSetting<T>, T extends Number> {
         Slider<S, T> construct(ModGuiScreen screen, S boundSetting, int x, int y, Supplier<Boolean> enabledCondition);
     }
 
-    private <S extends NumberSetting<T>, T> void addSlider(SliderConstructor<S, T> constructor, S setting, Supplier<Boolean> enabledCondition) {
+    private <S extends NumberSetting<T>, T extends Number> void addSlider(SliderConstructor<S, T> constructor, S setting, Supplier<Boolean> enabledCondition) {
         int prev = offset;
         addOtherStuff(setting, 162);
         elementList.add(constructor.construct(

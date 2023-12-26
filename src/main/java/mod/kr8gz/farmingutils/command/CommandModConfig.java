@@ -14,39 +14,46 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class CommandModConfig implements ICommand {
+    private static final String COMMAND_NAME = "farmingutils";
+    private static final List<String> COMMAND_ALIASES = Collections.singletonList("fu");
+
+    private static final List<String> ARGUMENT_EDIT_OVERLAY_ALIASES = Arrays.asList("overlay", "o");
+
     private static ModGuiScreen screen = null;
 
     @Override
     public String getCommandName() {
-        return "farmingutils";
+        return COMMAND_NAME;
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/" + getCommandName() + " <o|overlay>";
+        return String.format("/%s <%s>", getCommandName(), String.join("|", ARGUMENT_EDIT_OVERLAY_ALIASES));
     }
 
     @Override
     public List<String> getCommandAliases() {
-        return Collections.singletonList("fu");
+        return COMMAND_ALIASES;
     }
 
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
-        if (args.length == 0) {
-            screen = new GuiModConfig(null);
-        } else if (args.length == 1) {
-            if (args[0].equalsIgnoreCase("o") || args[0].equalsIgnoreCase("overlay")) {
-                screen = new GuiEditOverlay(null);
-            } else {
+        switch (args.length) {
+            case 0:
+                screen = new GuiModConfig(null);
+                break;
+            case 1:
+                if (ARGUMENT_EDIT_OVERLAY_ALIASES.stream().anyMatch(args[0]::equalsIgnoreCase)) {
+                    screen = new GuiEditOverlay(null);
+                    break;
+                }
+            default:
                 throw new WrongUsageException(getCommandUsage(sender));
-            }
-        } else {
-            throw new WrongUsageException(getCommandUsage(sender));
         }
     }
 
@@ -57,10 +64,7 @@ public class CommandModConfig implements ICommand {
 
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
-        List<String> list = new ArrayList<>();
-        list.add("o");
-        list.add("overlay");
-        return list;
+        return new ArrayList<>(ARGUMENT_EDIT_OVERLAY_ALIASES);
     }
 
     @Override

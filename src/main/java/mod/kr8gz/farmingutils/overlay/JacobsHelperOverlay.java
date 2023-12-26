@@ -58,10 +58,13 @@ public class JacobsHelperOverlay extends OverlaySection {
     @Override
     protected boolean shouldRender() {
         ServerData serverData = mc.getCurrentServerData();
-        return super.shouldRender()
-            && ConfigManager.enableJacobsHelper.get()
-            && serverData != null && serverData.serverIP.equals("hypixel.net")
-            && ScoreboardHelper.stringList().contains("Jacob's Contest");
+        boolean shouldRender = super.shouldRender()
+                && ConfigManager.enableJacobsHelper.get()
+                && serverData != null && serverData.serverIP.equals("hypixel.net")
+                && ScoreboardHelper.stringList().contains("Jacob's Contest");
+
+        if (shouldRender) scheduleResetAfterContest();
+        return shouldRender;
     }
 
     @Override
@@ -69,16 +72,16 @@ public class JacobsHelperOverlay extends OverlaySection {
         List<OverlayElement> list = new ArrayList<>();
         List<List<String>> strings = new ArrayList<>();
 
-        scheduleResetAfterContest();
-
-        MedalDataParser.Result currentMedalData = getCurrentMedalData().orElse(null);
+        MedalDataParseResult currentMedalData = getCurrentMedalData().orElse(null);
         if (currentMedalData == null) return list;
 
-        Optional<Double> currentCropsPerSecond = updateCurrentCropsPerSecond(currentMedalData.crops);
+        Optional<Integer> currentCropsPerSecond = updateCurrentCropsPerSecond(currentMedalData);
+        updateOtherMedalData(currentMedalData);
 
-        MedalTier.updateMedalData(currentMedalData);
-        for (int i = MedalTier.values().length - 1; i >= 0; i--) {
-            MedalTier medal = MedalTier.values()[i];
+        MedalTier[] allMedals = MedalTier.values();
+        // reverse iterate (from highest to lowest) excluding last one (MedalTier.NONE)
+        for (int i = allMedals.length - 1; i > 0; i--) {
+            MedalTier medal = allMedals[i];
             if (medal.cropsAfterContest <= 0) continue;
 
             String color = medal.dataState.color;
@@ -128,20 +131,65 @@ public class JacobsHelperOverlay extends OverlaySection {
         return list;
     }
 
-    private static final Pattern CURRENT_CROPS_PATTERN = Pattern.compile(" (Collected|" + MedalDataParser.ALL_MEDAL_NAMES_SUBPATTERN + " with) " + MedalDataParser.CROP_COUNT_SUBPATTERN);
-    private static Optional<MedalDataParser.Result> getCurrentMedalData() {
-        return MedalDataParser.parseFrom(CURRENT_CROPS_PATTERN);
+    static final UnaryOperator<String> MEDAL_NAME_SUBPATTERN = medalName -> "(?<medal>(?i)" + medalName + ")";
+    static final String ALL_MEDAL_NAMES_SUBPATTERN = MEDAL_NAME_SUBPATTERN.apply(
+            Stream.of(MedalTier.values())
+                    .map(MedalTier::name)
+                    .collect(Collectors.joining("|"))
+    );
+    static final String CROP_COUNT_SUBPATTERN = "(?<crops>\\d{1,3}(,\\d{3})*)";
+
+    static Optional<MedalDataParseResult> parseMedalData(Pattern pattern) {
+        return ScoreboardHelper.stringList().stream()
+                .map(pattern::matcher)
+                .filter(Matcher::find)
+                .map(matcher -> {
+                    MedalTier medal = MedalTier.fromString(matcher.group("medal"));
+                    int crops = Integer.parseInt(matcher.group("crops").replace(",", ""));
+                    return new MedalDataParseResult(medal, crops);
+                })
+                .findFirst();
     }
 
-    private static Optional<Double> updateCurrentCropsPerSecond(int currentCrops) {
-        if (currentCrops > lastCropCount && lastCropCount > 0) {
-            cropsDifferencesPerSecond.add(currentCrops - lastCropCount);
+    private static final Pattern CURRENT_CROPS_PATTERN = Pattern.compile(" (Collected|" + ALL_MEDAL_NAMES_SUBPATTERN + " with) " + CROP_COUNT_SUBPATTERN);
+    private static Optional<MedalDataParseResult> getCurrentMedalData() {
+        return parseMedalData(CURRENT_CROPS_PATTERN);
+    }
+
+    private static Optional<Integer> updateCurrentCropsPerSecond(MedalDataParseResult currentMedalData) {
+        if (currentMedalData.crops > lastCropCount && lastCropCount > 0) {
+            cropsDifferencesPerSecond.add(currentMedalData.crops - lastCropCount);
+            cropsDifferencesPerSecond.sort(Comparator.naturalOrder());
         }
-        lastCropCount = currentCrops;
+        lastCropCount = currentMedalData.crops;
 
         return cropsDifferencesPerSecond.isEmpty()
                 ? Optional.empty()
-                : Optional.of(cropsDifferencesPerSecond.stream().collect(Collectors.averagingDouble(Integer::doubleValue)));
+                // approximating median; list is sorted above
+                : Optional.of(cropsDifferencesPerSecond.get(cropsDifferencesPerSecond.size() / 2));
+    }
+
+    private static void updateOtherMedalData(MedalDataParseResult currentMedalData) {
+        for (MedalTier medal : MedalTier.values()) {
+            if (medal.dataState == DataState.ACTIVE) {
+                medal.dataState = DataState.OLD;
+            }
+        }
+
+        boolean isHighestMedal = currentMedalData.medal == currentMedalData.medal.next();
+
+        @SuppressWarnings("RegExpRepeatedSpace") // false warning
+        // https://cdn.discordapp.com/attachments/1118231519060824097/1188838511932080168/image.png?ex=659bfb24&is=65898624&hm=2222ba64833eb7878ef0aa47b59cb0edb3a0e56ebcc769489584421528452c58
+        Pattern pattern = Pattern.compile(isHighestMedal
+                ? " \\+" + CROP_COUNT_SUBPATTERN + " over " + MEDAL_NAME_SUBPATTERN.apply(currentMedalData.medal.prev().name())
+                : " " + MEDAL_NAME_SUBPATTERN.apply(currentMedalData.medal.next().name()) + " has \\+" + CROP_COUNT_SUBPATTERN
+        );
+
+        parseMedalData(pattern).ifPresent(result -> getElapsedSeconds().ifPresent(elapsedSeconds -> {
+            int medalCrops = isHighestMedal ? currentMedalData.crops - result.crops : currentMedalData.crops + result.crops;
+            result.medal.cropsAfterContest = Helper.round((double) medalCrops / elapsedSeconds * CONTEST_DURATION_SECONDS);
+            result.medal.dataState = DataState.ACTIVE;
+        }));
     }
 
     private static final Pattern REMAINING_TIME_PATTERN = Pattern.compile("[\\u25CB\\u2618]\\D*(?<minutes>\\d{1,2})m(?<seconds>\\d{1,2})s");
@@ -153,19 +201,18 @@ public class JacobsHelperOverlay extends OverlaySection {
                 .findFirst();
     }
 
-    public enum DataState {
-        UNKNOWN("\u00A78"),
-        OLD("\u00A77"),
-        ACTIVE("");
+    static class MedalDataParseResult {
+        final MedalTier medal;
+        final int crops;
 
-        public final String color;
-
-        DataState(String color) {
-            this.color = color;
+        private MedalDataParseResult(MedalTier medal, int crops) {
+            this.medal = medal;
+            this.crops = crops;
         }
     }
 
     public enum MedalTier {
+        NONE(""),
         BRONZE("\u00A7c"),
         SILVER("\u00A77"),
         GOLD("\u00A76"),
@@ -187,82 +234,37 @@ public class JacobsHelperOverlay extends OverlaySection {
             dataState = DataState.UNKNOWN;
         }
 
-        private static void updateMedalData(MedalDataParser.Result currentMedalData) {
-            for (MedalTier medal : MedalTier.values()) {
-                if (medal.dataState == DataState.ACTIVE) {
-                    medal.dataState = DataState.OLD;
-                }
-            }
-
-            boolean isHighestMedal = currentMedalData.medal == next(currentMedalData.medal);
-
-            @SuppressWarnings("RegExpRepeatedSpace") // false warning
-            // https://cdn.discordapp.com/attachments/1118231519060824097/1188838511932080168/image.png?ex=659bfb24&is=65898624&hm=2222ba64833eb7878ef0aa47b59cb0edb3a0e56ebcc769489584421528452c58
-            Pattern pattern = Pattern.compile(isHighestMedal
-                    ? " \\+" + MedalDataParser.CROP_COUNT_SUBPATTERN + " over " + MedalDataParser.MEDAL_NAME_SUBPATTERN.apply(prev(currentMedalData.medal).name())
-                    : " " + MedalDataParser.MEDAL_NAME_SUBPATTERN.apply(next(currentMedalData.medal).name()) + " has \\+" + MedalDataParser.CROP_COUNT_SUBPATTERN
-            );
-
-            MedalDataParser.parseFrom(pattern).ifPresent(result -> getElapsedSeconds().ifPresent(seconds -> {
-                int medalCrops = isHighestMedal ? currentMedalData.crops - result.crops : currentMedalData.crops + result.crops;
-                result.medal.cropsAfterContest = Helper.round((double) medalCrops / seconds * CONTEST_DURATION_SECONDS);
-                result.medal.dataState = DataState.ACTIVE;
-            }));
-        }
-
         public String formatNameWithColor(String color) {
             return (color.isEmpty() ? this.color : color) + "\u00A7l" + this.name() + "\u00A7r";
         }
 
-        public static MedalTier next(MedalTier medal) {
-            if (medal == null) return MedalTier.BRONZE;
+        public MedalTier next() {
             MedalTier[] values = MedalTier.values();
-            return values[Math.min(medal.ordinal() + 1, values.length)];
+            return values[Math.min(this.ordinal() + 1, values.length)];
         }
 
-        public static MedalTier prev(MedalTier medal) {
-            Objects.requireNonNull(medal);
-            return MedalTier.values()[Math.max(medal.ordinal() - 1, 0)];
+        public MedalTier prev() {
+            return MedalTier.values()[Math.max(this.ordinal() - 1, 0)];
         }
 
         public static MedalTier fromString(String string) {
             try {
-                return string == null ? null : MedalTier.valueOf(string.toUpperCase());
+                return string == null ? MedalTier.NONE : MedalTier.valueOf(string.toUpperCase());
             } catch (IllegalArgumentException e) {
                 return null;
             }
         }
     }
 
-    private static class MedalDataParser {
-        static final String CROP_COUNT_SUBPATTERN = "(?<crops>\\d{1,3}(,\\d{3})*)";
-        static final UnaryOperator<String> MEDAL_NAME_SUBPATTERN = medalName -> "(?<medal>(?i)" + medalName + ")";
-        static final String ALL_MEDAL_NAMES_SUBPATTERN = MEDAL_NAME_SUBPATTERN.apply(
-                Stream.of(MedalTier.values())
-                        .map(MedalTier::name)
-                        .collect(Collectors.joining("|"))
-        );
+    public enum DataState {
+        UNKNOWN("\u00A78"),
+        OLD("\u00A77"),
+        ACTIVE("");
 
-        static class Result {
-            final MedalTier medal;
-            final int crops;
+        public final String color;
 
-            private Result(MedalTier medal, int crops) {
-                this.medal = medal;
-                this.crops = crops;
-            }
-        }
-
-        static Optional<Result> parseFrom(Pattern pattern) {
-            return ScoreboardHelper.stringList().stream()
-                    .map(pattern::matcher)
-                    .filter(Matcher::find)
-                    .map(matcher -> {
-                        MedalTier medal = MedalTier.fromString(matcher.group("medal"));
-                        int crops = Integer.parseInt(matcher.group("crops").replace(",", ""));
-                        return new Result(medal, crops);
-                    })
-                    .findFirst();
+        DataState(String color) {
+            this.color = color;
         }
     }
 }

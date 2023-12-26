@@ -30,17 +30,6 @@ public class OverlayElement {
 
     private void initStringsByColumn() {
         if (strings.isEmpty()) return;
-
-        // strings.get(0).forEach(column -> stringsByColumn.add(new ArrayList<>()));
-        // for (List<String> row : strings) {
-        //     int i = 0;
-        //     for (String s : row) {
-        //         stringsByColumn.get(i).add(s);
-        //         i++;
-        //     }
-        // }
-
-        // TODO i didnt test it yet; if this works, then remove this and the above comment
         IntStream.range(0, strings.get(0).size()).forEach(i ->
                 stringsByColumn.add(strings.stream()
                         .map(row -> row.get(i))

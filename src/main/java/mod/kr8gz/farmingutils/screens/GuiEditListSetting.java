@@ -44,7 +44,7 @@ public class GuiEditListSetting<T> extends ModGuiScreen {
         }
 
         @Override
-        protected boolean checkValidInput() {
+        protected boolean isValidInput() {
             row = elementList.indexOf(this) / 3; // TODO why is this set here
             try {
                 return boundListSetting.set(row, boundListSetting.parseSingleElementFromString(value));

@@ -1,6 +1,6 @@
 package test.kr8gz.settings;
 
-public abstract class NumberSetting<T> extends SimpleSetting<T> {
+public abstract class NumberSetting<T extends Number> extends SimpleSetting<T> {
     public final T min;
     public final T max;
     public final T step;

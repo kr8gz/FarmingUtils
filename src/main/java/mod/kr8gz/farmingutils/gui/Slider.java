@@ -11,7 +11,7 @@ import test.kr8gz.settings.NumberSetting;
 
 import java.util.function.Supplier;
 
-public abstract class Slider<S extends NumberSetting<T>, T> extends ModGuiElement implements ModGuiElement.Toggleable, ModGuiElement.BoundToSetting {
+public abstract class Slider<S extends NumberSetting<T>, T extends Number> extends ModGuiElement implements ModGuiElement.Toggleable, ModGuiElement.BoundToSetting {
     static final ResourceLocation sliderTexture = new ResourceLocation(FarmingUtils.MODID, "textures/gui/slider.png");
 
     float sliderPos;
@@ -91,8 +91,8 @@ public abstract class Slider<S extends NumberSetting<T>, T> extends ModGuiElemen
         if (isEnabled() && mouseDown) {
             sliderPos = MathHelper.clamp_float((mouseX - xPosition) / 100f, 0f, 1f);
             updateValue(sliderPos);
-            sliderTextBox.value = value.toString();
             boundSetting.set(value);
+            sliderTextBox.updateFromSetting();
         }
     }
 }

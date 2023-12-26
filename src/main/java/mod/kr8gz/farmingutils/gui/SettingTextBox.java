@@ -1,11 +1,11 @@
 package mod.kr8gz.farmingutils.gui;
 
-import test.kr8gz.settings.SimpleSetting;
+import test.kr8gz.settings.Settings;
 
-public abstract class SettingTextBox extends TextBox implements ModGuiElement.BoundToSetting {
-    public final SimpleSetting<?> boundSetting;
+public abstract class SettingTextBox<S extends Settings.AbstractSetting<T>, T> extends TextBox implements ModGuiElement.BoundToSetting {
+    public final S boundSetting;
 
-    public SettingTextBox(SimpleSetting<?> boundSetting, int x, int y, int width, int height) {
+    public SettingTextBox(S boundSetting, int x, int y, int width, int height) {
         super(x, y, width, height);
         this.boundSetting = boundSetting;
         updateFromSetting();
@@ -17,7 +17,7 @@ public abstract class SettingTextBox extends TextBox implements ModGuiElement.Bo
     }
 
     @Override
-    protected boolean checkValidInput() {
+    protected boolean isValidInput() {
         try {
             return boundSetting.setFromString(value);
         } catch (NumberFormatException e) {

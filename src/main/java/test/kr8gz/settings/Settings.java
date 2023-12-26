@@ -5,7 +5,6 @@ import mod.kr8gz.farmingutils.util.Helper;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,9 +13,8 @@ public class Settings {
     private final Path path;
     public final ArrayList<AbstractSetting<?>> settingsList = new ArrayList<>();
 
-    public Settings(String path) {
-        this.path = Paths.get(path);
-        Helper.createFile(this.path);
+    public Settings(Path path) {
+        Helper.createFile(this.path = path);
     }
 
     public static abstract class AbstractSetting<T> {

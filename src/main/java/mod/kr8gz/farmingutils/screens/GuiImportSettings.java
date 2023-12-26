@@ -36,7 +36,7 @@ public class GuiImportSettings extends ModGuiScreen {
             @Override
             protected void action() {
                 try {
-                    Desktop.getDesktop().open(new File(FarmingUtils.MODID + "/config/settings.txt"));
+                    Desktop.getDesktop().open(ConfigManager.SETTINGS_PATH.toFile());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

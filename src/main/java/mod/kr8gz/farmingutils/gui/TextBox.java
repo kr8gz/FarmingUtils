@@ -16,7 +16,7 @@ public abstract class TextBox extends ModGuiElement implements ModGuiElement.Tog
         super(xPosition, yPosition, width, height);
     }
 
-    protected boolean checkValidInput() {
+    protected boolean isValidInput() {
         return true;
     }
 
@@ -27,17 +27,17 @@ public abstract class TextBox extends ModGuiElement implements ModGuiElement.Tog
     @Override
     public void draw() {
         boolean enabled = isEnabled();
-        boolean isValidInput = checkValidInput();
+        boolean validInput = isValidInput();
 
-        int boxColor;
-        if (enabled && selected && !isValidInput) {
-            boxColor = Colors.rgba(Colors.RED);
-        } else if (enabled && selected) {
-            boxColor = Colors.rgba(Colors.WHITE);
-        } else if (enabled && !isValidInput) {
-            boxColor = Colors.rgba(Colors.DARKRED);
-        } else {
-            boxColor = Colors.rgba(Colors.GRAY);
+        int boxColor = Colors.rgba(Colors.GRAY);
+        if (enabled) {
+            if (selected && !validInput) {
+                boxColor = Colors.rgba(Colors.RED);
+            } else if (selected) {
+                boxColor = Colors.rgba(Colors.WHITE);
+            } else if (!validInput) {
+                boxColor = Colors.rgba(Colors.DARKRED);
+            }
         }
 
         drawRect(xPosition, yPosition, xPosition + width, yPosition + height, boxColor);
