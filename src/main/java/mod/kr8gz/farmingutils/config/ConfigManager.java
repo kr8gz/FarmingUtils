@@ -7,6 +7,7 @@ import test.kr8gz.settings.*;
 import java.math.BigDecimal;
 
 public class ConfigManager {
+    // TODO put this path as a constant somewhere
     public static final Settings settings = new Settings(FarmingUtils.MODID + "/config/settings.txt");
 
     /** overlay settings */

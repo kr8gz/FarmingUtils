@@ -76,7 +76,7 @@ public class GuiModConfig extends ModGuiScreen {
         addCheckBox(smallerBreakingHelperOverlayVersion, () -> enableOverlay.get() && (enableBlockBreakAlert.get() || (lockYawAndPitch.get() && enableAngleHelper.get())));
 
         addSection("Miscellaneous");
-        addCheckBox(logInfo, () -> false); // Logger unused at the moment
+        addCheckBox(logInfo, () -> true);
 
         int w = maxWidth / 2 - 4;
         int xOffset = maxWidth / 2 + 4;

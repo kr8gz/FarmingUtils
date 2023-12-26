@@ -39,7 +39,7 @@ public class GuiExportSettings extends ModGuiScreen {
             @Override
             protected void action() {
                 try {
-                    List<String> lines = Files.readAllLines(Paths.get(FarmingUtils.MODID + "/config/settings.txt"));
+                    List<String> lines = Files.readAllLines(Paths.get(FarmingUtils.MODID, "config", "settings.txt"));
                     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.join("\n", lines)), null);
                 } catch (IOException e) {
                     e.printStackTrace();

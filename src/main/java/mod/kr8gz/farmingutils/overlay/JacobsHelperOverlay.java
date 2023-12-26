@@ -23,18 +23,21 @@ public class JacobsHelperOverlay extends OverlaySection {
     private static final ScheduledExecutorService resetScheduler = Executors.newScheduledThreadPool(1);
     private static boolean isResetScheduled;
 
-    private static final ArrayList<Integer> currentCropCountDifferencesPerSecond = new ArrayList<>();
-    private int lastCropCount;
-    private MedalTier lastAlertMedal;
-    private int alertShownSinceTick = -1;
+    private static final ArrayList<Integer> cropsDifferencesPerSecond = new ArrayList<>();
+    private static int lastCropCount;
+    private static MedalTier lastAlertMedal;
+    private static int alertShownSinceTick = -1;
 
     public JacobsHelperOverlay() {
         super(ConfigManager.jacobPosX, ConfigManager.jacobPosY, "Jacob's Helper", Colors.YELLOW);
+    }
+
+    static {
         reset();
     }
 
-    private void reset() {
-        currentCropCountDifferencesPerSecond.clear();
+    private static void reset() {
+        cropsDifferencesPerSecond.clear();
         lastCropCount = 0;
         lastAlertMedal = null;
 
@@ -45,10 +48,10 @@ public class JacobsHelperOverlay extends OverlaySection {
         isResetScheduled = false;
     }
 
-    private void scheduleResetAfterContest() {
+    private static void scheduleResetAfterContest() {
         if (!isResetScheduled) {
             isResetScheduled = true;
-            resetScheduler.schedule(this::reset, CONTEST_DURATION_SECONDS, TimeUnit.SECONDS);
+            resetScheduler.schedule(JacobsHelperOverlay::reset, CONTEST_DURATION_SECONDS, TimeUnit.SECONDS);
         }
     }
 
@@ -63,18 +66,15 @@ public class JacobsHelperOverlay extends OverlaySection {
 
     @Override
     protected List<OverlayElement> getElementList() {
-        scheduleResetAfterContest();
-
         List<OverlayElement> list = new ArrayList<>();
         List<List<String>> strings = new ArrayList<>();
+
+        scheduleResetAfterContest();
 
         MedalDataParser.Result currentMedalData = getCurrentMedalData().orElse(null);
         if (currentMedalData == null) return list;
 
-        if (currentMedalData.crops > lastCropCount && lastCropCount > 0) {
-            currentCropCountDifferencesPerSecond.add(currentMedalData.crops - lastCropCount);
-        }
-        lastCropCount = currentMedalData.crops;
+        Optional<Double> currentCropsPerSecond = updateCurrentCropsPerSecond(currentMedalData.crops);
 
         MedalTier.updateMedalData(currentMedalData);
         for (int i = MedalTier.values().length - 1; i >= 0; i--) {
@@ -98,13 +98,13 @@ public class JacobsHelperOverlay extends OverlaySection {
             }
 
             if (ConfigManager.showTimeUntilAlert.get()) {
-                double currentCropsPerSecond = currentCropCountDifferencesPerSecond.stream()
-                        .mapToInt(val -> val)
-                        .average()
-                        .orElse(0.0);
+                String timeDifferenceDisplay = currentCropsPerSecond
+                        .map(cps -> Helper.round((double) cropsDifference / cps))
+                        .map(Helper::formatTime)
+                        .map(time -> sign + time)
+                        .orElse("-");
 
-                int timeDifference = Helper.round((double) cropsDifference / currentCropsPerSecond);
-                strings.add(Arrays.asList("", color + (passedAlert ? "Time ahead" : "Time until alert"), color + sign + Helper.formatTime(timeDifference)));
+                strings.add(Arrays.asList("", color + (passedAlert ? "Time ahead" : "Time until alert"), color + timeDifferenceDisplay));
             }
 
             if (!passedAlert) continue;
@@ -133,7 +133,18 @@ public class JacobsHelperOverlay extends OverlaySection {
         return MedalDataParser.parseFrom(CURRENT_CROPS_PATTERN);
     }
 
-    private static final Pattern REMAINING_TIME_PATTERN = Pattern.compile("[\\u25CB\\u2618].*(?<minutes>\\d{1,2})m(?<seconds>\\d{1,2})s");
+    private static Optional<Double> updateCurrentCropsPerSecond(int currentCrops) {
+        if (currentCrops > lastCropCount && lastCropCount > 0) {
+            cropsDifferencesPerSecond.add(currentCrops - lastCropCount);
+        }
+        lastCropCount = currentCrops;
+
+        return cropsDifferencesPerSecond.isEmpty()
+                ? Optional.empty()
+                : Optional.of(cropsDifferencesPerSecond.stream().collect(Collectors.averagingDouble(Integer::doubleValue)));
+    }
+
+    private static final Pattern REMAINING_TIME_PATTERN = Pattern.compile("[\\u25CB\\u2618]\\D*(?<minutes>\\d{1,2})m(?<seconds>\\d{1,2})s");
     private static Optional<Integer> getElapsedSeconds() {
         return ScoreboardHelper.stringList().stream()
                 .map(REMAINING_TIME_PATTERN::matcher)
