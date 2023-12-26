@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
 import test.kr8gz.settings.Settings;
-import test.kr8gz.settings.types.BooleanSetting;
+import test.kr8gz.settings.BooleanSetting;
 
 public class ToggleKeybindHandler {
     private static final Settings toggleStates = new Settings(FarmingUtils.MODID + "/toggles.txt");

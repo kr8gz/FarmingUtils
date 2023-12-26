@@ -2,8 +2,7 @@ package mod.kr8gz.farmingutils.config;
 
 import mod.kr8gz.farmingutils.FarmingUtils;
 import mod.kr8gz.farmingutils.util.Helper;
-import test.kr8gz.settings.Settings;
-import test.kr8gz.settings.types.*;
+import test.kr8gz.settings.*;
 
 import java.math.BigDecimal;
 

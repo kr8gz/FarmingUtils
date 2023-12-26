@@ -1,6 +1,6 @@
 package mod.kr8gz.farmingutils.overlay;
 
-import mod.kr8gz.farmingutils.gui.screens.GuiEditOverlay;
+import mod.kr8gz.farmingutils.screens.GuiEditOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

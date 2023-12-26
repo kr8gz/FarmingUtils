@@ -2,8 +2,8 @@ package mod.kr8gz.farmingutils;
 
 import mod.kr8gz.farmingutils.overlay.BPSOverlay;
 import mod.kr8gz.farmingutils.overlay.OverlayHandler;
-import mod.kr8gz.farmingutils.overlay.elements.OverlaySection;
-import mod.kr8gz.farmingutils.gui.CommandModConfig;
+import mod.kr8gz.farmingutils.overlay.OverlaySection;
+import mod.kr8gz.farmingutils.command.CommandModConfig;
 import mod.kr8gz.farmingutils.util.Helper;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 public class FarmingUtils {
     public static final String MODID = "farmingutils";
     public static final String NAME = "FarmingUtils";
-    public static final String VERSION = "v1.1.0";
+    public static final String VERSION = "1.1.0";
 
     public FarmingUtils() {
         Helper.createDirectory(FarmingUtils.MODID + "/config");

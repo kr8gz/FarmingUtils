@@ -2,8 +2,6 @@ package mod.kr8gz.farmingutils.overlay;
 
 import mod.kr8gz.farmingutils.FarmingUtils;
 import mod.kr8gz.farmingutils.config.ConfigManager;
-import mod.kr8gz.farmingutils.overlay.elements.OverlayElement;
-import mod.kr8gz.farmingutils.overlay.elements.OverlaySection;
 import mod.kr8gz.farmingutils.util.Colors;
 import mod.kr8gz.farmingutils.util.Helper;
 import net.minecraft.util.MouseHelper;
